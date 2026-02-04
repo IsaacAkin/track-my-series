@@ -1,0 +1,16 @@
+* {
+    text-align: center;
+}
+
+.results {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.results>div {
+    border: 1px solid black;
+    width: 10em;
+    height: auto;
+}
