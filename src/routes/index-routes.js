@@ -1,8 +1,9 @@
 import express from "express";
+import { getSeries } from "../controllers/index-controllers.js";
 
 const router = express.Router();
 
-const watchlistLinks = [
+export const watchlistLinks = [
     { href: '/watchlist/watching', text: 'Watching' },
     { href: '/watchlist/completed', text: 'Completed' },
     { href: '/watchlist/on-hold', text: 'On Hold' },
@@ -10,6 +11,6 @@ const watchlistLinks = [
 ];
 
 router.get('/', (req, res) => res.render('index', { watchlistLinks }));
-// router.get('/:searchTerm')
+router.get('/search', getSeries);
 
 export default router;

@@ -1,0 +1,14 @@
+<header>
+    <h1><a href="/">Track My Series</a></h1>
+    <ul class="navbar">
+        <% for (let i = 0; i < watchlistLinks.length; i++) { %>
+            <li>
+                <a href="<%= watchlistLinks[i].href %>"><%= watchlistLinks[i].text %></a>
+            </li>
+        <% } %>
+    </ul>
+    <form action="/search" method="get" class="search-bar">
+        <input class="searchTerm" name="searchTerm" type="text" />
+        <button class="btn" type="submit">Search</button>
+    </form>
+</header>

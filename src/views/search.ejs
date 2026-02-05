@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script defer src="js/index.js"></script>
+    <title>Track My Movies</title>
+  </head>
+  <body>
+    <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
+    <h2>Found <%= results.length %> results for: <%= searchTerm %></h2>
+    <div class="results">
+      <% results.forEach(series => { %>
+        <div class="card" id="<%= series.id %>">
+          <p><%= series.title %></p>
+          <p><%= series.originalTitle %></p>
+          <p><%= series.type %></p>
+          <p><%= series.rating %></p>
+          <img src="<%= series.thumbnail %>" alt="" class="thumbnail">
+        </div>
+      <% }) %>
+    </div>
+  </body>
+</html>
