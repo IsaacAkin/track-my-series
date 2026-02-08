@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" /> <!-- tells the browser to always load from the site root -->
+    <script defer src="/js/index.js"></script> <!-- because the path it would otherwise try to load: '/title/js/index.js' doesn't exist -->
+    <title>Track My Movies</title>
+  </head>
+  <body>
+    <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
+    <div class="title-information" id="<%= title.id %>">
+        <p><%= title.title %></p>
+        <p><%= title.type %></p>
+        <p><%= title.startYear %></p>
+        <p><%= title.endYear %></p>
+        <p><%= title.rating %></p>
+        <p><%= title.plot %></p>
+        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+    </div>
+  </body>
+</html>

@@ -12,12 +12,12 @@
     <h2>Found <%= results.length %> results for: <%= searchTerm %></h2>
     <div class="results">
       <% results.forEach(series => { %>
-        <div class="card" id="<%= series.id %>">
-          <p><%= series.title %></p>
+        <div class="card" data-id="<%= series.id %>">
+          <p><a href="/title/<%= series.id %>"><%= series.title %></a></p>
           <p><%= series.originalTitle %></p>
           <p><%= series.type %></p>
           <p><%= series.rating %></p>
-          <img src="<%= series.thumbnail %>" alt="" class="thumbnail">
+          <img src="<%= series.thumbnail %>" alt="<%= series.originalTitle %> poster image" class="thumbnail">
         </div>
       <% }) %>
     </div>
