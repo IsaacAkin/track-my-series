@@ -1,5 +1,5 @@
 import express from "express";
-import { getSeries, getTitle } from "../controllers/index-controllers.js";
+import { addToPlanToWatch, getSeries, getTitle } from "../controllers/index-controllers.js";
 
 const router = express.Router();
 
@@ -13,5 +13,6 @@ export const watchlistLinks = [
 router.get('/', (req, res) => res.render('index', { watchlistLinks }));
 router.get('/search', getSeries);
 router.get('/title/:id', getTitle);
+router.post('/title/:id', addToPlanToWatch);
 
 export default router;

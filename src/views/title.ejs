@@ -9,14 +9,15 @@
   </head>
   <body>
     <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
-    <div class="title-information" id="<%= title.id %>">
-        <p><%= title.title %></p>
-        <p><%= title.type %></p>
-        <p><%= title.startYear %></p>
-        <p><%= title.endYear %></p>
-        <p><%= title.rating %></p>
-        <p><%= title.plot %></p>
+    <div class="title-information" id="<%= title.id %>" data-id="<%= title.id %>">
+        <p class="primary-title"><%= title.title %></p>
+        <p class="type"><%= title.type %></p>
+        <p class="start-year"><%= title.startYear %></p>
+        <p class="end-year"><%= title.endYear %></p>
+        <p class="rating"><%= title.rating %></p>
+        <p class="plot"><%= title.plot %></p>
         <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+        <button type="submit" class="submit-btn">Add to Watchlist</button>
     </div>
   </body>
 </html>

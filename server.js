@@ -18,6 +18,7 @@ app.set('views', [
 ]);
 app.set('view engine', 'ejs'); // views templete is set to use ejs
 app.use(express.static(assetsPath));
+app.use(express.json()); // to parse JSON data into req.body
 
 app.use('/', indexRouter);
 app.use('/watchlist', watchlistRouter);

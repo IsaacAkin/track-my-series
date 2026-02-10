@@ -1,4 +1,5 @@
 import { watchlistLinks } from "../routes/index-routes.js";
+import { addToCollection } from "../../database.js";
 
 /** returns an array of titles from the IMDB database that match the search query */
 export async function getSeries(req, res) {
@@ -65,4 +66,13 @@ export async function getTitle(req, res) {
         console.error(error);
         res.status(500).send('Failed to fetch title information');
     }
+}
+
+/** recieves JSON payload of series/movie data and calls the database function to add to the plan to watch collection */
+export async function addToPlanToWatch(req, res) {
+    const { id, title, type, startYear, endYear, plot, thumbnail } = req.body;
+
+    await addToCollection('plan-to-watch', id, title, type, startYear, endYear, plot, thumbnail);
+
+    res.json({ message: `${title} has been added to the plan to watch collection.` });
 }
