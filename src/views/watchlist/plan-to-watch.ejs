@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../css/watchlist.css" />
+    <script defer src="../../js/watchlist.js"></script>
+    <title>Track My Movies</title>
+  </head>
+  <body>
+    <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
+    <h2>Plan to Watch</h2>
+    <div class="results">
+      <% titles.forEach(title => { %>
+        <div class="card">
+          <p class="primary-title"><%= title.title %></p>
+          <p class="type"><%= title.type %></p>
+          <p class="start-year"><%= title.startYear %></p>
+          <p class="end-year"><%= title.endYear %></p>
+          <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+        </div>
+      <% }) %>
+    </div>
+  </body>
+</html>

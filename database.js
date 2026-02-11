@@ -28,3 +28,24 @@ export const addToCollection = async (collectionName, id, title, type, startYear
         await client.close();
     }
 }
+
+/** returns a populated array of all titles from a specified collection */
+export const getCollectionTitles = async (collectionName) => {
+    const titles = [];
+
+    try {
+        await connectToDatabase();
+        const collection = client.db('track-my-series').collection(collectionName);
+        const query = collection.find();
+
+        for await (const title of query) {
+            titles.push(title);
+        }
+
+        return titles;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        client.close();
+    }
+}
