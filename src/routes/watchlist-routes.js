@@ -1,5 +1,5 @@
 import express from "express";
-import * as controller from "../controllers/watchlist-controllers.js";
+import { displayCollection, getSingleTitle } from "../controllers/watchlist-controllers.js";
 
 const router = express.Router();
 
@@ -10,6 +10,7 @@ export const watchlistLinks = [
     { href: '/watchlist/collections/plan-to-watch', text: 'Plan to Watch' },
 ];
 
-router.get('/collections/:collection', controller.displayCollection);
+router.get('/collections/:collection', displayCollection);
+router.get('/collections/:collection/:id', getSingleTitle);
 
 export default router;

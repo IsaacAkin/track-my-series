@@ -49,3 +49,20 @@ export const getCollectionTitles = async (collectionName) => {
         client.close();
     }
 }
+
+/** returns a single titles information based on the ID provided */
+export const getTitle = async (collectionName, titleId) => {
+    try {
+        await connectToDatabase();
+        const collection = client.db('track-my-series').collection(collectionName);
+        
+        const query = { _id: titleId }
+        const title = await collection.findOne(query);
+
+        return title;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        client.close();
+    }
+}
