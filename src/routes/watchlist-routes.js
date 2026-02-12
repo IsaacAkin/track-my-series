@@ -10,9 +10,6 @@ export const watchlistLinks = [
     { href: '/watchlist/collections/plan-to-watch', text: 'Plan to Watch' },
 ];
 
-router.get('/collections/plan-to-watch', controller.displayPlanToWatch);
-router.get('/collections/watching', controller.displayWatching);
-router.get('/collections/on-hold', controller.displayOnHold);
-router.get('/collections/completed', controller.displayCompleted);
+router.get('/collections/:collection', controller.displayCollection);
 
 export default router;

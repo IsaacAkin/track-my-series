@@ -1,30 +1,27 @@
 import { watchlistLinks } from "../routes/watchlist-routes.js";
 import { getCollectionTitles } from "../../database.js";
 
-/** gets all titles in the plan-to-watch collection and renders them on the plan to watch page */
-export const displayPlanToWatch = async (req, res) => {
-    const titles = await getCollectionTitles('plan-to-watch');
+/** gets all titles in a specified collection and renders them on the specified page */
+export const displayCollection = async (req, res) => {
+    const { collection } = req.params;
+    verifyCollection(res, collection);
     
-    res.render('plan-to-watch', { titles, watchlistLinks })
-}
-
-/** gets all titles in the watching collection and renders them on the watching page */
-export const displayWatching = async (req, res) => {
-    const titles = await getCollectionTitles('watching');
+    const titles = await getCollectionTitles(collection);
+    const message = 'Nothing has been added yet';
     
-    res.render('watching', { titles, watchlistLinks })
+    res.render(collection, { titles, message, collection , watchlistLinks });
 }
 
-/** gets all titles in the on-hold collection and renders them on the on hold page */
-export const displayOnHold = async (req, res) => {
-    const titles = await getCollectionTitles('on-hold');
+/** checks to see if the specified collection is a valid collection */
+const verifyCollection = (res, collection) => {
+    const views = [
+        'plan-to-watch',
+        'watching',
+        'on-hold',
+        'completed'
+    ];
 
-    res.render('on-hold', { titles, watchlistLinks })
-}
-
-/** gets all titles in the completed collection and renders them on the completed page */
-export const displayCompleted = async (req, res) => {
-    const titles = await getCollectionTitles('completed');
-
-    res.render('completed', { titles, watchlistLinks })
+    if (!views.includes(collection)) {
+        return res.status(404).send('Collection not found.');
+    }
 }
