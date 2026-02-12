@@ -4,10 +4,10 @@ import { addToPlanToWatch, getSeries, getTitle } from "../controllers/index-cont
 const router = express.Router();
 
 export const watchlistLinks = [
-    { href: '/watchlist/watching', text: 'Watching' },
-    { href: '/watchlist/completed', text: 'Completed' },
-    { href: '/watchlist/on-hold', text: 'On Hold' },
-    { href: '/watchlist/plan-to-watch', text: 'Plan to Watch' },
+    { href: '/watchlist/collections/watching', text: 'Watching' },
+    { href: '/watchlist/collections/completed', text: 'Completed' },
+    { href: '/watchlist/collections/on-hold', text: 'On Hold' },
+    { href: '/watchlist/collections/plan-to-watch', text: 'Plan to Watch' },
 ];
 
 router.get('/', (req, res) => res.render('index', { watchlistLinks }));
