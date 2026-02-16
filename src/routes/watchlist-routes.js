@@ -4,13 +4,13 @@ import { displayCollection, getSingleTitle } from "../controllers/watchlist-cont
 const router = express.Router();
 
 export const watchlistLinks = [
-    { href: '/watchlist/collections/watching', text: 'Watching' },
-    { href: '/watchlist/collections/completed', text: 'Completed' },
-    { href: '/watchlist/collections/on-hold', text: 'On Hold' },
-    { href: '/watchlist/collections/plan-to-watch', text: 'Plan to Watch' },
+    { href: '/watchlist/watching', text: 'Watching' },
+    { href: '/watchlist/completed', text: 'Completed' },
+    { href: '/watchlist/on-hold', text: 'On Hold' },
+    { href: '/watchlist/plan-to-watch', text: 'Plan to Watch' },
 ];
 
-router.get('/collections/:collection', displayCollection);
-router.get('/collections/:collection/:id', getSingleTitle);
+router.get('/:collection', displayCollection);
+router.get('/:collection/:id', getSingleTitle);
 
 export default router;
