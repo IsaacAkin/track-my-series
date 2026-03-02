@@ -15,12 +15,19 @@ export const displayCollection = async (req, res) => {
 
 /** gets a single title from the specified collection via its ID and renders it */
 export const getSingleTitle = async (req, res) => {
+    // add error handling for if an id doesnt exist
     const { id, collection } = req.params;
 
     verifyCollection(res, collection);
     const title = await getTitle(collection, id);
 
-    res.render('watchlist-title', { title, watchlistLinks });
+    if (!title) {
+        res.status(404).send('Title not found.');
+        return;
+    }
+    const currentCollection = collection;
+
+    res.render('watchlist-title', { title, currentCollection, watchlistLinks });
 }
 
 /** checks to see if the specified collection is a valid collection */

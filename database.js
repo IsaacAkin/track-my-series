@@ -42,6 +42,12 @@ export const getCollectionTitles = async (collectionName) => {
             titles.push(title);
         }
 
+        if (titles.length === 0) {
+            console.log(`No titles found in the '${collectionName}' collection.`);
+            return titles;
+        }
+        
+        console.log(`${titles.length} titles found in the '${collectionName}' collection.`);
         return titles;
     } catch (error) {
         console.error(error);
@@ -59,9 +65,15 @@ export const getTitle = async (collectionName, titleId) => {
         const query = { _id: titleId }
         const title = await collection.findOne(query);
 
+        if (!title) {
+            return null;
+        }
+
+        console.log(`Title with _id: ${titleId} found:`);
+        console.log(title);
         return title;
     } catch (error) {
-        console.error(error);
+        console.error('Title _id could not be found in the collection:', error);
     } finally {
         client.close();
     }
