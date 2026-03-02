@@ -72,7 +72,7 @@ export async function getTitle(req, res) {
 export async function addToPlanToWatch(req, res) {
     const { id, title, type, startYear, endYear, plot, thumbnail } = req.body;
 
-    await addToCollection('plan-to-watch', id, title, type, startYear, endYear, plot, thumbnail);
+    await addToCollection(id, title, type, startYear, endYear, plot, thumbnail);
 
     res.json({ message: `${title} has been added to the plan to watch collection.` });
 }

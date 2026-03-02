@@ -14,14 +14,14 @@ const connectToDatabase = async () => {
 }
 
 /** adds a new series/movie document into the specified collection */
-export const addToCollection = async (collectionName, id, title, type, startYear, endYear, plot, thumbnail) => {
+export const addToCollection = async (id, title, type, startYear, endYear, plot, thumbnail) => {
     try {
         await connectToDatabase();
-        const planToWatch = client.db('track-my-series').collection(collectionName);
-        const query = { _id: id, title: title, type: type, startYear: startYear, endYear: endYear, plot: plot, thumbnail: thumbnail }
+        const planToWatch = client.db('track-my-series').collection('titles');
+        const query = { _id: id, title: title, type: type, startYear: startYear, endYear: endYear, plot: plot, thumbnail: thumbnail, status: 'plan to watch' };
 
         const result = await planToWatch.insertOne(query);
-        console.log(`'${title}' has been added to the 'plan to watch' collection with the _id: ${result.insertedId}.`);
+        console.log(`'${title}' has been added to the 'titles' collection with the _id: ${result.insertedId}.`);
     } catch (error) {
         console.error(error);
     } finally {
