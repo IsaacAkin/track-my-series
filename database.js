@@ -68,23 +68,23 @@ export const getTitlesWithStatus = async (status) => {
 }
 
 /** returns the information of a single title in the database based on the ID provided */
-export const getTitle = async (titleId, status) => {
+export const getTitle = async (titleId) => {
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
         
-        const query = { _id: titleId, status: status }
+        const query = { _id: titleId }
         const title = await collection.findOne(query);
 
         if (!title) {
             return null;
         }
 
-        console.log(`Title with _id: ${titleId} and status: ${status} found:`);
+        console.log(`Title with _id: ${titleId} found:`);
         console.log(title);
         return title;
     } catch (error) {
-        console.error(`Title with _id: ${titleId} and status: ${status} could not be found in the collection:`, error);
+        console.error(`Title with _id: ${titleId} could not be found in the collection:`, error);
     } finally {
         client.close();
     }

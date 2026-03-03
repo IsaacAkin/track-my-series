@@ -9,28 +9,23 @@ export async function getSeries(req, res) {
         res.render('search', { searchTerm: '', results: [] });
     }
 
-    try {
-        const response = await fetch(`https://api.imdbapi.dev/search/titles?query=${searchTerm}`);
-        if (!response.ok) {
-            throw new Error("Problem fetching series information");
-        }
-        
-        const data = await response.json();
-
-        const results = data.titles.map(series => ({
-            id: series.id,
-            title: series.primaryTitle,
-            originalTitle: series.originalTitle,
-            type: series.type,
-            rating: series.rating?.aggregateRating ?? 'N/A',
-            thumbnail: series.primaryImage?.url || ''
-        }));
-
-        res.render('search', { searchTerm, results, watchlistLinks })
-    } catch (error) {
-        console.error(error);
+    const response = await fetch(`https://api.imdbapi.dev/search/titles?query=${searchTerm}`);
+    if (!response.ok) {
         res.status(500).send('Failed to fetch search results');
+        throw new Error("Problem fetching series information");
     }
+    
+    const data = await response.json();
+    const results = data.titles.map(series => ({
+        id: series.id,
+        title: series.primaryTitle,
+        originalTitle: series.originalTitle,
+        type: series.type,
+        rating: series.rating?.aggregateRating ?? 'N/A',
+        thumbnail: series.primaryImage?.url || ''
+    }));
+
+    res.render('search', { searchTerm, results, watchlistLinks });
 }
 
 /** returns information from a specific title */
@@ -41,38 +36,34 @@ export async function getTitle(req, res) {
         return res.status(400).send('A title ID is required');
     }
 
-    try {
-        const response = await fetch(`https://api.imdbapi.dev/titles/${id}`);
-        if (!response.ok) {
-            throw new Error(`Error fetching title information.\n Response status: ${response.status} ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        const title = {
-            id: data.id,
-            title: data.primaryTitle,
-            type: data.type,
-            startYear: data.startYear,
-            endYear: data.endYear,
-            genres: data.genres,
-            rating: data.rating?.aggregateRating ?? 'N/A',
-            plot: data.plot,
-            thumbnail: data.primaryImage?.url || ''
-        };
-
-        console.log(title);
-        res.render('title', { title, watchlistLinks });
-    } catch (error) {
-        console.error(error);
+    const response = await fetch(`https://api.imdbapi.dev/titles/${id}`);
+    if (!response.ok) {
         res.status(500).send('Failed to fetch title information');
+        throw new Error(`Error fetching title information.\n Response status: ${response.status} ${response.statusText}`);
     }
+
+    const data = await response.json();
+    const title = {
+        id: data.id,
+        title: data.primaryTitle,
+        type: data.type,
+        startYear: data.startYear,
+        endYear: data.endYear,
+        genres: data.genres,
+        rating: data.rating?.aggregateRating ?? 'N/A',
+        plot: data.plot,
+        thumbnail: data.primaryImage?.url || ''
+    };
+
+    console.log(title);
+    res.render('title', { title, watchlistLinks });
 }
 
-/** recieves JSON payload of series/movie data and calls the database function to add to the plan to watch collection */
-export async function addToPlanToWatch(req, res) {
+/** recieves JSON payload of series/movie data, calls the database function to add to the titles collection */
+export async function addTitleToDatabase(req, res) {
     const { id, title, type, startYear, endYear, plot, thumbnail } = req.body;
 
     await addToCollection(id, title, type, startYear, endYear, plot, thumbnail);
 
-    res.json({ message: `${title} has been added to the plan to watch collection.` });
+    res.json({ message: `'${title}' has been added to the titles collection.` });
 }

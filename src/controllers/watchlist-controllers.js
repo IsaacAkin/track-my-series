@@ -1,37 +1,35 @@
 import { watchlistLinks } from "../routes/watchlist-routes.js";
-import { getCollectionTitles, getTitle } from "../../database.js";
+import { getTitlesWithStatus, getTitle } from "../../database.js";
 
-/** gets all titles in a specified collection and renders them on the specified page */
-export const displayCollection = async (req, res) => {
-    const { collection } = req.params;
+/** gets all titles with the specified status and renders them on the specified page */
+export const displayTitles = async (req, res) => {
+    const { status } = req.params;
 
-    verifyCollection(res, collection);
+    verifyStatus(res, status);
 
-    const titles = await getCollectionTitles(collection);
+    const titles = await getTitlesWithStatus(status);
     const message = 'Nothing has been added yet';
     
-    res.render(collection, { titles, message, collection , watchlistLinks });
+    res.render(status, { titles, message, status , watchlistLinks });
 }
 
 /** gets a single title from the specified collection via its ID and renders it */
 export const getSingleTitle = async (req, res) => {
-    // add error handling for if an id doesnt exist
-    const { id, collection } = req.params;
+    const { id, status } = req.params;
 
-    verifyCollection(res, collection);
-    const title = await getTitle(collection, id);
+    verifyStatus(res, status);
+    const title = await getTitle(id);
 
     if (!title) {
         res.status(404).send('Title not found.');
         return;
     }
-    const currentCollection = collection;
 
-    res.render('watchlist-title', { title, currentCollection, watchlistLinks });
+    res.render('watchlist-title', { title, watchlistLinks });
 }
 
 /** checks to see if the specified collection is a valid collection */
-const verifyCollection = (res, collection) => {
+const verifyStatus = (res, status) => {
     const views = [
         'plan-to-watch',
         'watching',
@@ -39,7 +37,7 @@ const verifyCollection = (res, collection) => {
         'completed'
     ];
 
-    if (!views.includes(collection)) {
-        return res.status(404).send('Collection not found.');
+    if (!views.includes(status)) {
+        return res.status(404).send(`'${status}' not found.`);
     }
 }
