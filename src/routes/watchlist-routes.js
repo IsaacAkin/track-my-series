@@ -12,6 +12,6 @@ export const watchlistLinks = [
 
 router.get('/:status', displayTitles);
 router.get('/:status/:id', getSingleTitle);
-router.post('/:status/:id', changeTitleStatus);
+router.patch('/:status/:id', changeTitleStatus);
 
 export default router;
