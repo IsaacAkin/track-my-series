@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/watchlist.css" />
+    <script defer src="/js/watchlist.js"></script>
+    <title>Track My Movies</title>
+  </head>
+  <body>
+    <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
+    <div class="title-information" id="<%= title._id %>" data-id="<%= title._id %>">
+        <p class="primary-title"><%= title.title %></p>
+        <p class="type"><%= title.type %></p>
+        <p class="start-year"><%= title.startYear %></p>
+        <p class="end-year"><%= title.endYear %></p>
+        <p class="rating"><%= title.rating %></p>
+        <p class="plot"><%= title.plot %></p>
+        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+        <select name="status" id="status">
+          <% listOfStatuses.forEach(status => { %>
+            <option value="<%= status.value %>"
+              <%= title.status === status.value ? 'selected' : '' %>>
+              <%= status.label %>
+            </option>
+          <% }) %>
+        </select>
+    </div>
+  </body>
+</html>

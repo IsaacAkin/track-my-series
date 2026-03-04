@@ -1,0 +1,14 @@
+<div class="results">
+    <% if (titles.length === 0) { %>
+    <p><%= message %></p>
+    <% } %>
+    <% titles.forEach(title => { %>
+    <div class="card">
+        <p class="primary-title"><a href="/watchlist/<%= status %>/<%= title._id %>"><%= title.title %></a></p>
+        <p class="type"><%= title.type %></p>
+        <p class="start-year"><%= title.startYear %></p>
+        <p class="end-year"><%= title.endYear %></p>
+        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+    </div>
+    <% }) %>
+</div>
