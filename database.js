@@ -40,6 +40,35 @@ export const addToCollection = async (id, title, type, startYear, endYear, plot,
     }
 }
 
+/** finds title information by ID and updates the watch status */
+export const updateTitleStatus = async (titleId, newStatus) => {
+    try {
+        await connectToDatabase();
+        const collection = client.db(trackMySeriesDB).collection(titlesCollection);
+    
+        const documentToChange = await collection.findOne({ _id: titleId });
+        if (documentToChange === undefined) {
+            throw new Error(`Could not find _id in the ${titlesCollection} collection.`);
+        }
+        const oldStatus = documentToChange.status;
+        
+        const filter = { _id: titleId };
+        const updateDoc = {
+            $set: {
+                status: newStatus
+            }
+        };
+    
+        const result = await collection.updateOne(filter, updateDoc);
+        result.modifiedCount > 0 ? console.log(`Updated ${result.modifiedCount} document.`) : console.log(`${result.modifiedCount} documents updated.`);
+        console.log(`Updated the status of '${documentToChange.title}' from '${oldStatus}' to '${newStatus}'.`);
+    } catch (error) {
+        console.error(error);
+    } finally {
+        await client.close();
+    }
+}
+
 /** returns a populated array of all series with the specified status from the titles collection */
 export const getTitlesWithStatus = async (status) => {
     const titles = [];
@@ -47,7 +76,7 @@ export const getTitlesWithStatus = async (status) => {
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
-        const query = collection.find({ status: status });
+        const query = collection.find({ status: status }).sort({ title: 1 }); // sorts results in alphabetical order
 
         for await (const title of query) {
             titles.push(title);

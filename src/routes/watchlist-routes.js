@@ -1,5 +1,5 @@
 import express from "express";
-import { displayTitles, getSingleTitle } from "../controllers/watchlist-controllers.js";
+import { changeTitleStatus, displayTitles, getSingleTitle } from "../controllers/watchlist-controllers.js";
 
 const router = express.Router();
 
@@ -12,5 +12,6 @@ export const watchlistLinks = [
 
 router.get('/:status', displayTitles);
 router.get('/:status/:id', getSingleTitle);
+router.post('/:status/:id', changeTitleStatus);
 
 export default router;
