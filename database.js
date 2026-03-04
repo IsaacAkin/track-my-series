@@ -118,3 +118,22 @@ export const getTitle = async (titleId) => {
         client.close();
     }
 }
+
+/** deletes a title from the database via the _id provided */
+export const deleteTitle = async (titleId) => {
+    try {
+        await connectToDatabase();
+        const collection = client.db(trackMySeriesDB).collection(titlesCollection);
+
+        const query = { _id: titleId };
+        const titleToDelete = await collection.deleteOne(query);
+
+        titleToDelete.deletedCount === 1 
+        ? console.log('Successfully deleted 1 document from the collection')
+        : console.log('No documents matched the query. Deleted 0 documents.');
+    } catch (error) {
+        console.error(error);
+    } finally {
+        await client.close();
+    }
+}

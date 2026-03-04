@@ -1,5 +1,5 @@
 import { watchlistLinks } from "../routes/watchlist-routes.js";
-import { getTitlesWithStatus, getTitle, updateTitleStatus } from "../../database.js";
+import { getTitlesWithStatus, getTitle, updateTitleStatus, deleteTitle } from "../../database.js";
 
 /** gets all titles with the specified status and renders them on the specified page */
 export const displayTitles = async (req, res) => {
@@ -43,6 +43,15 @@ export const changeTitleStatus = async (req, res) => {
     await updateTitleStatus(id, newStatus);
 
     res.json('Successfully title status');
+}
+
+/** recieves titleId from the req.params and removes it from the collection */
+export const removeSingleTitle = async (req, res) => {
+    const { id } = req.params;
+
+    await deleteTitle(id);
+
+    res.json('Successfully deleted title from the collection');
 }
 
 /** checks to see if the specified collection is a valid collection */
