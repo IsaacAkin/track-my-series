@@ -69,6 +69,35 @@ export const updateTitleStatus = async (titleId, newStatus) => {
     }
 }
 
+/** finds title information by ID and updates the rating */
+export const updateTitleRating = async (titleId, newRating) => {
+    try {
+        await connectToDatabase();
+        const collection = client.db(trackMySeriesDB).collection(titlesCollection);
+    
+        const documentToChange = await collection.findOne({ _id: titleId });
+        if (documentToChange === undefined) {
+            throw new Error(`Could not find _id in the ${titlesCollection} collection.`);
+        }
+        const oldRating = documentToChange.rating;
+        
+        const filter = { _id: titleId };
+        const updateDoc = {
+            $set: {
+                rating: parseInt(newRating)
+            }
+        };
+    
+        const result = await collection.updateOne(filter, updateDoc);
+        result.modifiedCount > 0 ? console.log(`Updated ${result.modifiedCount} document.`) : console.log(`${result.modifiedCount} documents updated.`);
+        console.log(`Updated the rating of '${documentToChange.title}' from '${oldRating === 0 ? 'No Rating' : oldRating}' to '${newRating == 0 ? 'No Rating' : newRating}'.`);
+    } catch (error) {
+        console.error(error);
+    } finally {
+        await client.close();
+    }
+}
+
 /** returns a populated array of all series with the specified status from the titles collection */
 export const getTitlesWithStatus = async (status) => {
     const titles = [];

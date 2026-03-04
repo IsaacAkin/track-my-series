@@ -1,10 +1,11 @@
-const dropdown = document.querySelector('#status');
+const statusDropdown = document.querySelector('#status');
+const ratingDropdown = document.querySelector('#rating');
 const deleteBtn = document.querySelector('.delete-btn');
 
-/** sends the post reequest to the server with the new status information */
+/** sends the post request to the server with the new status information */
 const updateCollection = async () => {
     const titleId = document.querySelector('.title-information').dataset.id;
-    const newStatus = dropdown.value;
+    const newStatus = statusDropdown.value;
 
     const payload = { newStatus };
 
@@ -23,7 +24,34 @@ const updateCollection = async () => {
     } catch (error) {
         console.error(error);
     } finally {
-        dropdown.disabled = false;
+        statusDropdown.disabled = false;
+    }
+}
+
+/** sends the post request to the server with the new status information */
+const updateRating = async () => {
+    const titleId = document.querySelector('.title-information').dataset.id;
+    const status = statusDropdown.value;
+    const newRating = ratingDropdown.value;
+
+    const payload = { newRating };
+
+    try {
+        const response = await fetch(`/watchlist/${status}/${titleId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to send title information to the server: ${response.status}`);
+        }
+
+        console.log('Successfully sent title information to the server');
+    } catch (error) {
+        console.error(error);
+    } finally {
+        ratingDropdown.disabled = false;
     }
 }
 
@@ -48,9 +76,14 @@ const deleteFromCollection = async () => {
     }
 }
 
-dropdown.addEventListener('change', async () => {
-    dropdown.disabled = true;
+statusDropdown.addEventListener('change', async () => {
+    statusDropdown.disabled = true;
     await updateCollection();
+});
+
+ratingDropdown.addEventListener('change', async () => {
+    ratingDropdown.disabled = true;
+    await updateRating();
 });
 
 deleteBtn.addEventListener('click', async () => {

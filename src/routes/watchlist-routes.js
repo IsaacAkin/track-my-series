@@ -1,5 +1,5 @@
 import express from "express";
-import { changeTitleStatus, displayTitles, getSingleTitle, removeSingleTitle } from "../controllers/watchlist-controllers.js";
+import { changeTitleRating, changeTitleStatus, displayTitles, getSingleTitle, removeSingleTitle } from "../controllers/watchlist-controllers.js";
 
 const router = express.Router();
 
@@ -12,7 +12,13 @@ export const watchlistLinks = [
 
 router.get('/:status', displayTitles);
 router.get('/:status/:id', getSingleTitle);
+
+router.patch('/plan-to-watch/:id', changeTitleRating);
+router.patch('/watching/:id', changeTitleRating);
+router.patch('/on-hold/:id', changeTitleRating);
+router.patch('/completed/:id', changeTitleRating);
 router.patch('/:status/:id', changeTitleStatus);
+
 router.delete('/:status/:id', removeSingleTitle);
 
 export default router;

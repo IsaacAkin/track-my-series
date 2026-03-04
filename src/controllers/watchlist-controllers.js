@@ -1,5 +1,5 @@
 import { watchlistLinks } from "../routes/watchlist-routes.js";
-import { getTitlesWithStatus, getTitle, updateTitleStatus, deleteTitle } from "../../database.js";
+import { getTitlesWithStatus, getTitle, updateTitleStatus, deleteTitle, updateTitleRating } from "../../database.js";
 
 /** gets all titles with the specified status and renders them on the specified page */
 export const displayTitles = async (req, res) => {
@@ -31,8 +31,17 @@ export const getSingleTitle = async (req, res) => {
         { value: 'on-hold', label: 'On Hold'},
         { value: 'completed', label: 'Completed'}
     ]
+    
+    const listOfRatings = [
+        { value: 0, label: 'No Rating'},
+        { value: 1, label: '1 ⭐'},
+        { value: 2, label: '2 ⭐'},
+        { value: 3, label: '3 ⭐'},
+        { value: 4, label: '4 ⭐'},
+        { value: 5, label: '5 ⭐'}
+    ]
 
-    res.render('watchlist-title', { title, listOfStatuses, watchlistLinks });
+    res.render('watchlist-title', { title, listOfStatuses, listOfRatings, watchlistLinks });
 }
 
 /** updates a titles status to the selected option passed in the req.body */
@@ -43,6 +52,16 @@ export const changeTitleStatus = async (req, res) => {
     await updateTitleStatus(id, newStatus);
 
     res.json('Successfully title status');
+}
+
+/** updates a titles rating to the selected option passed in the req.body */
+export const changeTitleRating = async (req, res) => {
+    const { id } = req.params;
+    const { newRating } = req.body;
+
+    await updateTitleRating(id, newRating);
+
+    res.json('Successfully title rating');
 }
 
 /** recieves titleId from the req.params and removes it from the collection */

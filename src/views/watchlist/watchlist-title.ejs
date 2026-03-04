@@ -25,6 +25,14 @@
             </option>
           <% }) %>
         </select>
+        <select name="rating" id="rating">
+          <% listOfRatings.forEach(rating => { %>
+            <option value="<%= rating.value %>"
+              <%= title.rating === rating.value ? 'selected' : '' %>>
+              <%= rating.label %>
+            </option>
+          <% }) %>
+        </select>
         <button class="delete-btn" type="button">Delete Title</button>
     </div>
   </body>
