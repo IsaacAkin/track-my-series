@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/style.css" />
-    <script defer src="js/index.js"></script>
+    <!-- <script defer src="js/index.js"></script> -->
     <title>Track My Movies</title>
   </head>
   <body>
@@ -13,11 +13,17 @@
     <div class="results">
       <% results.forEach(series => { %>
         <div class="card" data-id="<%= series.id %>">
-          <p><a href="/title/<%= series.id %>"><%= series.title %></a></p>
-          <p><%= series.originalTitle %></p>
-          <p><%= series.type %></p>
-          <p><%= series.rating %></p>
-          <img src="<%= series.thumbnail %>" alt="<%= series.originalTitle %> poster image" class="thumbnail">
+          <div class="image-container">
+            <img src="<%= series.thumbnail %>" alt="<%= series.originalTitle %> poster image" class="thumbnail">
+          </div>
+          <div class="text-container">
+            <p><%= series.type %></p>
+            <p><a href="/title/<%= series.id %>"><%= series.title %></a></p>
+          </div>
+          <div class="text-container-two">
+            <p><%= series.originalTitle %></p>
+            <p><%= series.rating %></p>
+          </div>
         </div>
       <% }) %>
     </div>
