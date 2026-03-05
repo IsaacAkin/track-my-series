@@ -1,0 +1,83 @@
+* {
+    text-align: center;
+}
+
+/* HEADER */
+.navbar {
+    border: 1px solid black;
+    list-style: none;
+}
+
+.navbar>li {
+    border: 1px solid red;
+    display: inline-block;
+    cursor: pointer;
+    color: black;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:visited {
+    color: black;
+}
+
+/* STATUS LIST */
+.thumbnail {
+    width: 4.5em;
+    height: 4.5em;
+    border-radius: 100%;
+}
+
+.full-thumbnail {
+    width: 160px;
+    height: 270px;
+}
+
+.results {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    flex-flow: column wrap;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.results>.card {
+    border: 1px solid black;
+    display: flex;
+    height: 5rem;
+    align-items: center;
+}
+
+.card>.image-container {
+    margin-left: 0.3rem;
+}
+
+.card>.text-container {
+    /* border: 1px solid red; */
+    width: 90%;
+    gap: 1em;
+    margin-left: 2rem;
+}
+
+.text-container>p {
+    text-align: left;
+}
+
+.card>.text-container-two {
+    /* border: 1px solid red; */
+    width: 90%;
+    gap: 1em;
+    margin-left: 2rem;
+}
+
+.text-container-two>p {
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
