@@ -16,7 +16,7 @@
         <p class="end-year"><%= title.endYear %></p>
         <p class="rating"><%= title.rating %></p>
         <p class="plot"><%= title.plot %></p>
-        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="full-thumbnail">
         <select name="status" id="status">
           <% listOfStatuses.forEach(status => { %>
             <option value="<%= status.value %>"
@@ -34,6 +34,10 @@
           <% }) %>
         </select>
         <button class="delete-btn" type="button">Delete Title</button>
+        <dialog class="successfully-deleted">
+          <p>'<%= title.title %>' has successfully been deleted.</p>
+          <button type="button">Close</button>
+        </dialog>
     </div>
   </body>
 </html>

@@ -16,8 +16,12 @@
         <p class="end-year"><%= title.endYear %></p>
         <p class="rating"><%= title.rating %></p>
         <p class="plot"><%= title.plot %></p>
-        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="full-thumbnail">
         <button type="submit" class="submit-btn">Add to Watchlist</button>
     </div>
+    <dialog class="title-added">
+      <p>'<%= title.title %>' has been added to 'plan to watch'.</p>
+      <button type="button">Close</button>
+    </dialog>
   </body>
 </html>

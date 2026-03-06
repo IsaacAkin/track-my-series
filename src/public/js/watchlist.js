@@ -1,6 +1,8 @@
 const statusDropdown = document.querySelector('#status');
 const ratingDropdown = document.querySelector('#rating');
 const deleteBtn = document.querySelector('.delete-btn');
+const dialog = document.querySelector('.successfully-deleted');
+const closeBtn = document.querySelector('.successfully-deleted > button');
 
 /** sends the post request to the server with the new status information */
 const updateCollection = async () => {
@@ -69,10 +71,9 @@ const deleteFromCollection = async () => {
         }
 
         console.log('Successfully sent title information to the server.');
+        dialog.showModal();
     } catch (error) {
         console.error(error);
-    } finally {
-        deleteBtn.disabled = false;
     }
 }
 
@@ -88,5 +89,11 @@ ratingDropdown.addEventListener('change', async () => {
 
 deleteBtn.addEventListener('click', async () => {
     deleteBtn.disabled = true;
+    statusDropdown.disabled = true;
+    ratingDropdown.disabled = true;
     await deleteFromCollection();
 });
+
+closeBtn.addEventListener('click', () => {
+    dialog.close();
+})

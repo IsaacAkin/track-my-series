@@ -1,4 +1,6 @@
 const button = document.querySelector('.submit-btn');
+const dialog = document.querySelector('.title-added');
+const closeBtn = document.querySelector('.title-added > button');
 
 async function addToWatchlist() {
     const id = document.querySelector('.title-information').dataset.id;
@@ -33,11 +35,17 @@ async function addToWatchlist() {
         }
 
         console.log(`Successfully sent information on '${title}' to the server.`);
+        dialog.showModal();
     } catch (error) {
         console.error(`Failed to send title information to the server: ${error}`);
     }
 }
 
 button.addEventListener('click', async () => {
+    button.disabled = true;
     await addToWatchlist();
+});
+
+closeBtn.addEventListener('click', () => {
+    dialog.close();
 });
