@@ -81,3 +81,28 @@ a:visited {
 .text-container>p {
     text-align: left;
 }
+
+/* MOBILE */
+@media(width <=360px) {
+    .navbar {
+        display: flex;
+        flex-flow: column wrap;
+        border-bottom: 1px solid black;
+        justify-content: center;
+        /* align-items: center; */
+    }
+
+    .quick-links {
+        list-style: none;
+        display: flex;
+        justify-self: center;
+        gap: 20px;
+    }
+
+    .quick-links>li {
+        border: 1px solid red;
+        display: inline-block;
+        cursor: pointer;
+        color: black;
+    }
+}
