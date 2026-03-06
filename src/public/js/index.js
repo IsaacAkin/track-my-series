@@ -9,7 +9,7 @@ async function addToWatchlist() {
     const startYear = document.querySelector('.start-year').textContent;
     const endYear = document.querySelector('.end-year').textContent;
     const plot = document.querySelector('.plot').textContent;
-    const thumbnail = document.querySelector('.thumbnail').src;
+    const thumbnail = document.querySelector('.full-thumbnail').src;
 
     const payload = {
         id,
