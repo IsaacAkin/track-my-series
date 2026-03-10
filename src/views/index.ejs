@@ -8,6 +8,19 @@
     <title>Track My Movies</title>
   </head>
   <body>
-    <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
+    <h1><a href="/">Track My Series</a></h1>
+    <nav class="index-navbar">
+        <ul class="index-quick-links">
+            <% for (let i = 0; i < watchlistLinks.length; i++) { %>
+                <li>
+                    <a href="<%= watchlistLinks[i].href %>"><%= watchlistLinks[i].text %></a>
+                </li>
+            <% } %>
+        </ul>
+      </nav>
+      <form action="/search" method="get" class="index-search-bar">
+          <input class="searchTerm" name="searchTerm" type="text" autocomplete="off" placeholder="Search TV Shows, Movies, and more..."/>
+          <button class="btn" type="submit">Search</button>
+      </form>
   </body>
 </html>
