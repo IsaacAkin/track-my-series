@@ -1,6 +1,6 @@
 # Track My Series
 
-I use the free `IMDbAPI` from `https://imdbapi.dev/` in this project to get all movie and TV show data.
+I use the free [IMDbAPI](https://imdbapi.dev/) from in this project to get all movie and TV show data.
 
 Website to track movies and tv series watched and currently watching
 
