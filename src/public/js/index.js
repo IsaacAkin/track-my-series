@@ -11,33 +11,26 @@ async function addToWatchlist() {
     const plot = document.querySelector('.plot').textContent;
     const thumbnail = document.querySelector('.full-thumbnail').src;
 
-    const payload = {
-        id,
-        title,
-        type,
-        startYear,
-        endYear,
-        plot,
-        thumbnail
-    }
-
-    console.log('Payload:', payload);
+    const payload = { id, title, type, startYear, endYear, plot, thumbnail };
 
     try {
-        const response = await fetch('/title/:id', {
+        const response = await fetch(`/title`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to send title information to the server: ${response}`);    
+            button.disabled = false;
+            const data = await response.json();
+            throw new Error(data.message);
         }
 
-        console.log(`Successfully sent information on '${title}' to the server.`);
+        const data = await response.json();
+        console.log(data.message);
         dialog.showModal();
     } catch (error) {
-        console.error(`Failed to send title information to the server: ${error}`);
+        console.error(`Failed to send title information: ${error}`);
     }
 }
 
