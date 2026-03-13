@@ -23,6 +23,10 @@ app.use(express.json()); // to parse JSON data into req.body
 app.use('/', indexRouter);
 app.use('/watchlist', watchlistRouter);
 
+app.use((req, res) => {
+    res.status(404).send('Page not found.');
+}); // global handler when an invalid route is trying to be accessed
+
 app.listen(PORT, (error) => {
     if (error) {
         console.error(error);
