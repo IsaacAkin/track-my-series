@@ -9,7 +9,7 @@
   </head>
   <body>
     <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
-    <div class="title-information" id="<%= title._id %>" data-id="<%= title._id %>">
+    <div class="title-information" id="<%= title._id %>" data-id="<%= title._id %>" data-status="<%= title.status %>">
         <p class="primary-title"><%= title.title %></p>
         <p class="type"><%= title.type %></p>
         <p class="start-year"><%= title.startYear %></p>

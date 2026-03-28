@@ -5,14 +5,15 @@ const dialog = document.querySelector('.successfully-deleted');
 const closeBtn = document.querySelector('.successfully-deleted > button');
 
 /** sends the post request to the server with the new status information */
-const updateCollection = async () => {
+const updateStatus = async () => {
     const titleId = document.querySelector('.title-information').dataset.id;
+    const currentStatus = document.querySelector('.title-information').dataset.status;
     const newStatus = statusDropdown.value;
 
     const payload = { newStatus };
 
     try {
-        const response = await fetch(`/watchlist/:status/${titleId}`, {
+        const response = await fetch(`/watchlist/${currentStatus}/${titleId}/newstatus`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -22,7 +23,8 @@ const updateCollection = async () => {
             throw new Error(`Failed to send title information to the server: ${response.status}`);
         }
 
-        console.log('Successfully sent title information to the server');
+        const data = await response.json();
+        console.log(data.message);
     } catch (error) {
         console.error(error);
     } finally {
@@ -39,7 +41,7 @@ const updateRating = async () => {
     const payload = { newRating };
 
     try {
-        const response = await fetch(`/watchlist/${status}/${titleId}`, {
+        const response = await fetch(`/watchlist/${status}/${titleId}/newrating`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -49,7 +51,8 @@ const updateRating = async () => {
             throw new Error(`Failed to send title information to the server: ${response.status}`);
         }
 
-        console.log('Successfully sent title information to the server');
+        const data = await response.json();
+        console.log(data.message);
     } catch (error) {
         console.error(error);
     } finally {
@@ -59,9 +62,10 @@ const updateRating = async () => {
 
 const deleteFromCollection = async () => {
     const titleId = document.querySelector('.title-information').dataset.id;
+    const status = statusDropdown.value;
 
     try {
-        const response = await fetch(`/watchlist/:status/${titleId}`, {
+        const response = await fetch(`/watchlist/${status}/${titleId}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -70,7 +74,8 @@ const deleteFromCollection = async () => {
             throw new Error(`Failed to send title information to the server: ${response.status}`);
         }
 
-        console.log('Successfully sent title information to the server.');
+        const data = await response.json();
+        console.log(data.message);
         dialog.showModal();
     } catch (error) {
         console.error(error);
@@ -79,7 +84,7 @@ const deleteFromCollection = async () => {
 
 statusDropdown.addEventListener('change', async () => {
     statusDropdown.disabled = true;
-    await updateCollection();
+    await updateStatus();
 });
 
 ratingDropdown.addEventListener('change', async () => {

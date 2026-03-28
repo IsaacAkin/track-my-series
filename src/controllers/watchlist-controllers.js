@@ -3,34 +3,28 @@ import { getTitlesWithStatus, getTitle, updateTitleStatus, deleteTitle, updateTi
 
 /** gets all titles with the specified status and renders them on the specified page */
 export const displayTitles = async (req, res) => {
-    const { status } = req.params;
-
-    verifyStatus(res, status);
-
-    const titles = await getTitlesWithStatus(status);
-    const message = 'Nothing has been added yet';
+    try {
+        const { status } = req.params;
     
-    res.render(status, { titles, message, status , watchlistLinks });
+        if (!verifyStatus(res, status)) { return };
+    
+        const titles = await getTitlesWithStatus(status);
+        const message = 'Nothing has been added yet';
+        
+        res.render(status, { titles, message, status , watchlistLinks });
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /** gets a single title from the specified collection via its ID and renders it */
 export const getSingleTitle = async (req, res) => {
-    const { id, status } = req.params;
-
-    verifyStatus(res, status);
-    const title = await getTitle(id);
-
-    if (!title) {
-        res.status(404).send('Title not found.');
-        return;
-    }
-
     const listOfStatuses = [
         { value: 'plan-to-watch', label: 'Plan To Watch'},
         { value: 'watching', label: 'Watching'},
         { value: 'on-hold', label: 'On Hold'},
         { value: 'completed', label: 'Completed'}
-    ]
+    ];
     
     const listOfRatings = [
         { value: 0, label: 'No Rating'},
@@ -39,38 +33,66 @@ export const getSingleTitle = async (req, res) => {
         { value: 3, label: '3 ⭐'},
         { value: 4, label: '4 ⭐'},
         { value: 5, label: '5 ⭐'}
-    ]
+    ];
 
-    res.render('watchlist-title', { title, listOfStatuses, listOfRatings, watchlistLinks });
+    try {
+        const { id, status } = req.params;
+    
+        if (!verifyStatus(res, status)) { return };
+        const title = await getTitle(id);
+    
+        if (!title) {
+            res.status(404).send('Title not found.');
+            return;
+        }
+    
+        res.render('watchlist-title', { title, listOfStatuses, listOfRatings, watchlistLinks });
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /** updates a titles status to the selected option passed in the req.body */
 export const changeTitleStatus = async (req, res) => {
-    const { id } = req.params;
-    const { newStatus } = req.body;
+    try {
+        const { id } = req.params;
+        const { newStatus } = req.body;
+        
+        await updateTitleStatus(id, newStatus);
+        res.status(200).json({ message: `Successfully changed title status to '${newStatus}.'` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to update title status.' });
+    }
 
-    await updateTitleStatus(id, newStatus);
 
-    res.json('Successfully title status');
 }
 
 /** updates a titles rating to the selected option passed in the req.body */
 export const changeTitleRating = async (req, res) => {
-    const { id } = req.params;
-    const { newRating } = req.body;
-
-    await updateTitleRating(id, newRating);
-
-    res.json('Successfully title rating');
+    try {
+        const { id } = req.params;
+        const { newRating } = req.body;
+    
+        await updateTitleRating(id, newRating);
+        res.status(200).json({ message: `Successfully changed title rating to '${newRating}'.` });
+    } catch (error) {
+        console.error(error);
+        res.status9(500).json({ message: 'Failed to update title rating.' });
+    }
 }
 
 /** recieves titleId from the req.params and removes it from the collection */
-export const removeSingleTitle = async (req, res) => {
-    const { id } = req.params;
-
-    await deleteTitle(id);
-
-    res.json('Successfully deleted title from the collection');
+export const deleteSingleTitle = async (req, res) => {
+    try {
+        const { id } = req.params;
+    
+        await deleteTitle(id);
+        res.status(200).json({ message: 'Successfully deleted title from the collection.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to delete title from the collection.' });
+    }
 }
 
 /** checks to see if the specified collection is a valid collection */
@@ -83,6 +105,9 @@ const verifyStatus = (res, status) => {
     ];
 
     if (!views.includes(status)) {
-        return res.status(404).send(`'${status}' not found.`);
+        res.status(404).send(`'${status}' not found.`);
+        return false;
     }
+
+    return true;
 }
