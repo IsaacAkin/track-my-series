@@ -11,11 +11,11 @@ export const watchlistLinks = [
 ];
 
 router.get('/:status', displayTitles);
-router.get('/:status/:id', getSingleTitle);
+router.get('/:id/:name', getSingleTitle);
 
-router.patch('/:status/:id/newrating', changeTitleRating);
-router.patch('/:status/:id/newstatus', changeTitleStatus);
+router.patch('/:id/newrating', changeTitleRating);
+router.patch('/:id/newstatus', changeTitleStatus);
 
-router.delete('/:status/:id', deleteSingleTitle);
+router.delete('/:id', deleteSingleTitle);
 
 export default router;

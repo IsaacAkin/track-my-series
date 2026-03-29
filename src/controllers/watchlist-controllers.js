@@ -36,9 +36,7 @@ export const getSingleTitle = async (req, res) => {
     ];
 
     try {
-        const { id, status } = req.params;
-    
-        if (!verifyStatus(res, status)) { return };
+        const { id } = req.params;
         const title = await getTitle(id);
     
         if (!title) {

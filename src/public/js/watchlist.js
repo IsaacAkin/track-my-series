@@ -7,13 +7,12 @@ const closeBtn = document.querySelector('.successfully-deleted > button');
 /** sends the post request to the server with the new status information */
 const updateStatus = async () => {
     const titleId = document.querySelector('.title-information').dataset.id;
-    const currentStatus = document.querySelector('.title-information').dataset.status;
     const newStatus = statusDropdown.value;
 
     const payload = { newStatus };
 
     try {
-        const response = await fetch(`/watchlist/${currentStatus}/${titleId}/newstatus`, {
+        const response = await fetch(`/watchlist/${titleId}/newstatus`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -35,13 +34,12 @@ const updateStatus = async () => {
 /** sends the post request to the server with the new status information */
 const updateRating = async () => {
     const titleId = document.querySelector('.title-information').dataset.id;
-    const status = statusDropdown.value;
     const newRating = ratingDropdown.value;
 
     const payload = { newRating };
 
     try {
-        const response = await fetch(`/watchlist/${status}/${titleId}/newrating`, {
+        const response = await fetch(`/watchlist/${titleId}/newrating`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -62,10 +60,9 @@ const updateRating = async () => {
 
 const deleteFromCollection = async () => {
     const titleId = document.querySelector('.title-information').dataset.id;
-    const status = statusDropdown.value;
 
     try {
-        const response = await fetch(`/watchlist/${status}/${titleId}`, {
+        const response = await fetch(`/watchlist/${titleId}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
         });
