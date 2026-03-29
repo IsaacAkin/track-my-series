@@ -5,6 +5,22 @@ const client = new MongoClient(uri);
 const trackMySeriesDB = 'track-my-series';
 const titlesCollection = 'titles';
 
+export const listOfStatuses = [
+    { value: 'plan-to-watch', label: 'Plan To Watch'},
+    { value: 'watching', label: 'Watching'},
+    { value: 'on-hold', label: 'On Hold'},
+    { value: 'completed', label: 'Completed'}
+];
+
+export const listOfRatings = [
+    { value: 0, label: 'No Rating'},
+    { value: 1, label: '1 ⭐'},
+    { value: 2, label: '2 ⭐'},
+    { value: 3, label: '3 ⭐'},
+    { value: 4, label: '4 ⭐'},
+    { value: 5, label: '5 ⭐'}
+];
+
 /** tests database connection to make sure everything is okay */
 const connectToDatabase = async () => {
     try {

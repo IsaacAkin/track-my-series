@@ -1,5 +1,5 @@
 import express from "express";
-import { addTitleToDatabase, getSeries, getTitle } from "../controllers/index-controllers.js";
+import { addTitleToDatabase, getSeries, fetchTitleInfo } from "../controllers/index-controllers.js";
 
 const router = express.Router();
 
@@ -12,7 +12,8 @@ export const watchlistLinks = [
 
 router.get('/', (req, res) => res.render('index', { watchlistLinks }));
 router.get('/search', getSeries);
-router.get('/title/:id', getTitle);
+router.get('/title/:id', fetchTitleInfo);
+
 router.post('/title', addTitleToDatabase);
 
 export default router;

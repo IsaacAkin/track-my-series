@@ -1,5 +1,5 @@
 import { watchlistLinks } from "../routes/index-routes.js";
-import { addToCollection } from "../../database.js";
+import { addToCollection, getTitle, listOfStatuses, listOfRatings } from "../../database.js";
 
 /** returns an array of titles from the IMDB database that match the search query */
 export async function getSeries(req, res) {
@@ -32,35 +32,39 @@ export async function getSeries(req, res) {
     }
 }
 
-/** returns information from a specific title */
-export async function getTitle(req, res) {
+/** fetches title information from the IMDB database if it doesn't already exist in the personal watchlist */
+export async function fetchTitleInfo(req, res) {
     try {
         const { id } = req.params;
-    
         if (!id) {
             return res.status(400).send('A title ID is required.');
         }
 
-        const response = await fetch(`https://api.imdbapi.dev/titles/${id}`);
-        if (!response.ok) {
-            return res.status(502).send('Title retrieval service temporarily unavailable.');
+        const title = await getTitle(id);
+        if (!title) {
+            const response = await fetch(`https://api.imdbapi.dev/titles/${id}`);
+            if (!response.ok) {
+                return res.status(502).send('Title retrieval service temporarily unavailable.');
+            }
+            
+            const data = await response.json();
+            const title = {
+                id: data.id,
+                title: data.primaryTitle,
+                type: data.type,
+                startYear: data.startYear,
+                endYear: data.endYear,
+                genres: data.genres,
+                rating: data.rating?.aggregateRating ?? 'N/A',
+                plot: data.plot,
+                thumbnail: data.primaryImage?.url || ''
+            };
+            
+            console.log(title);
+            res.render('title', { title, watchlistLinks });
+        } else {
+            res.render('watchlist-title', { title, listOfStatuses, listOfRatings, watchlistLinks });
         }
-
-        const data = await response.json();
-        const title = {
-            id: data.id,
-            title: data.primaryTitle,
-            type: data.type,
-            startYear: data.startYear,
-            endYear: data.endYear,
-            genres: data.genres,
-            rating: data.rating?.aggregateRating ?? 'N/A',
-            plot: data.plot,
-            thumbnail: data.primaryImage?.url || ''
-        };
-
-        console.log(title);
-        res.render('title', { title, watchlistLinks });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal server error');
