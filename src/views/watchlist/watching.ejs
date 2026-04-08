@@ -4,12 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../css/watchlist.css" />
-    <!-- <script defer src="../../js/watchlist.js"></script> -->
     <title>Track My Movies</title>
   </head>
   <body>
-    <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
-    <h2>Watching</h2>
-    <%- include('partials/titles-list') %>
+    <div class="app">
+      <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
+      <h2>Watching</h2>
+      <%- include('partials/titles-list') %>
+    </div>
   </body>
 </html>
