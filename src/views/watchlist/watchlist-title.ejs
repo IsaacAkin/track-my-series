@@ -8,36 +8,54 @@
     <title>Track My Movies</title>
   </head>
   <body>
-    <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
-    <div class="title-information" id="<%= title._id %>" data-id="<%= title._id %>" data-status="<%= title.status %>">
-        <p class="primary-title"><%= title.title %></p>
-        <p class="type"><%= title.type %></p>
-        <p class="start-year"><%= title.startYear %></p>
-        <p class="end-year"><%= title.endYear %></p>
-        <p class="rating"><%= title.rating %></p>
-        <p class="plot"><%= title.plot %></p>
-        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="full-thumbnail">
-        <select name="status" id="status">
-          <% listOfStatuses.forEach(status => { %>
-            <option value="<%= status.value %>"
-              <%= title.status === status.value ? 'selected' : '' %>>
-              <%= status.label %>
-            </option>
-          <% }) %>
-        </select>
-        <select name="rating" id="rating">
-          <% listOfRatings.forEach(rating => { %>
-            <option value="<%= rating.value %>"
-              <%= title.rating === rating.value ? 'selected' : '' %>>
-              <%= rating.label %>
-            </option>
-          <% }) %>
-        </select>
-        <button class="delete-btn" type="button">Delete Title</button>
-        <dialog class="successfully-deleted">
-          <p>'<%= title.title %>' has successfully been deleted.</p>
-          <button type="button">Close</button>
-        </dialog>
+    <script>
+      const seasons = <%- JSON.stringify(title.seasons) %>;
+    </script>
+    <div class="app">
+      <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
+      <div class="title-information" id="<%= title._id %>" data-id="<%= title._id %>" data-status="<%= title.status %>">
+          <p class="primary-title"><%= title.title %></p>
+          <p class="type"><%= title.type %></p>
+          <p class="start-year"><%= title.startYear %></p>
+          <p class="end-year"><%= title.endYear %></p>
+          <p class="rating"><%= title.rating %></p>
+          <p class="plot"><%= title.plot %></p>
+          <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="full-thumbnail">
+          <select name="status" id="status">
+            <% listOfStatuses.forEach(status => { %>
+              <option value="<%= status.value %>"
+                <%= title.status === status.value ? 'selected' : '' %>>
+                <%= status.label %>
+              </option>
+            <% }) %>
+          </select>
+          <select name="rating" id="rating">
+            <% listOfRatings.forEach(rating => { %>
+              <option value="<%= rating.value %>"
+                <%= title.rating === rating.value ? 'selected' : '' %>>
+                <%= rating.label %>
+              </option>
+            <% }) %>
+          </select>
+          <!-- TODO: Episodes displayed need to match the episodes of the season -->
+          <% if (title.type != 'movie') { %>
+            <select name="seasons" id="seasons" data-seasons="<%- JSON.stringify(title.seasons) %>">
+              <% title.seasons.forEach(season => { %>
+                <option value="<%= season.season %>">Season <%= season.season %></option>
+              <% }) %>
+            </select>
+          <% } %>
+          <input type="number" name="total_episodes" id="total_episodes" disabled value="<%= title.seasons[0].total_episodes %>">
+          <input type="number" name="watched_episodes" id="watched_episodes" value="<%= title.seasons[0].watched_episodes %>">
+          <span class="invalid-number"></span>
+          <button type="button" class="increment-btn">+1</button>
+          <button type="button" class="decrement-btn">-1</button>
+          <button class="delete-btn" type="button">Delete Title</button>
+          <dialog class="successfully-deleted">
+            <p>'<%= title.title %>' has successfully been deleted.</p>
+            <button type="button">Close</button>
+          </dialog>
+      </div>
     </div>
   </body>
 </html>

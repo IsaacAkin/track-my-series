@@ -1,5 +1,5 @@
 import { watchlistLinks } from "../routes/watchlist-routes.js";
-import { getTitlesWithStatus, getTitle, updateTitleStatus, deleteTitle, updateTitleRating, listOfStatuses, listOfRatings } from "../../database.js";
+import { getTitlesWithStatus, getTitle, updateTitleStatus, deleteTitle, updateTitleRating, updateEpisodeCount, listOfStatuses, listOfRatings } from "../../database.js";
 
 /** gets all titles with the specified status and renders them on the specified page */
 export const displayTitles = async (req, res) => {
@@ -60,7 +60,20 @@ export const changeTitleRating = async (req, res) => {
         res.status(200).json({ message: `Successfully changed title rating to '${newRating}'.` });
     } catch (error) {
         console.error(error);
-        res.status9(500).json({ message: 'Failed to update title rating.' });
+        res.status(500).json({ message: 'Failed to update title rating.' });
+    }
+}
+
+export const changeEpisodeCount = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { seasonNumber, episodeCount, maxEpisodes } = req.body;
+
+        await updateEpisodeCount(id, seasonNumber, episodeCount, maxEpisodes);
+        res.status(200).json({ message: `Successfully changed watched episode count to ${episodeCount}`});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to update episode count.' });
     }
 }
 

@@ -3,6 +3,12 @@ const ratingDropdown = document.querySelector('#rating');
 const deleteBtn = document.querySelector('.delete-btn');
 const dialog = document.querySelector('.successfully-deleted');
 const closeBtn = document.querySelector('.successfully-deleted > button');
+const seasonsDropdown = document.querySelector('#seasons');
+const totalEpisodes = document.querySelector('#total_episodes');
+const watchedEpisodes = document.querySelector('#watched_episodes');
+const invalidNumber = document.querySelector('.invalid-number');
+const incrementBtn = document.querySelector('.increment-btn');
+const decrementBtn = document.querySelector('.decrement-btn');
 
 /** sends the post request to the server with the new status information */
 const updateStatus = async () => {
@@ -27,7 +33,7 @@ const updateStatus = async () => {
     } catch (error) {
         console.error(error);
     } finally {
-        statusDropdown.disabled = false;
+        enableElements();
     }
 }
 
@@ -54,17 +60,27 @@ const updateRating = async () => {
     } catch (error) {
         console.error(error);
     } finally {
-        ratingDropdown.disabled = false;
+        enableElements();
     }
 }
 
-const deleteFromCollection = async () => {
+const updateEpisodeCount = async () => {
     const titleId = document.querySelector('.title-information').dataset.id;
+    const seasonNumber = Number(seasonsDropdown.value);
+    const maxEpisodes = Number(totalEpisodes.value);
+    const episodeCount = Number(watchedEpisodes.value);
+
+    const payload = {
+        seasonNumber,
+        episodeCount,
+        maxEpisodes
+    };
 
     try {
-        const response = await fetch(`/watchlist/${titleId}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
+        const response = await fetch(`/watchlist/${titleId}/incrementEpisode`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
@@ -73,29 +89,150 @@ const deleteFromCollection = async () => {
 
         const data = await response.json();
         console.log(data.message);
+    } catch (error) {
+        console.error(error)
+    } finally {
+        enableElements();
+    }
+}
+
+const changeEpisodeCount = async (e) => {
+    disableElements();
+
+    const maxEpisodes = Number(totalEpisodes.value);
+    const episodeCount = Number(e.target.value);
+
+    if (episodeCount > maxEpisodes || episodeCount < 0 || isNaN(episodeCount)) {
+        invalidNumber.textContent = 'Invalid number';
+        enableElements();
+        return;
+    }
+
+    watchedEpisodes.value = episodeCount;
+    await updateEpisodeCount();
+    isValidNumber();
+}
+
+const isValidIncrement = async () => {
+    disableElements();
+
+    const maxEpisodes = Number(totalEpisodes.value);
+    const episodeCount = Number(watchedEpisodes.value);
+
+    if (episodeCount + 1 > maxEpisodes) {
+        invalidNumber.textContent = 'Invalid number';
+        enableElements();
+        return;
+    }
+
+    watchedEpisodes.value = episodeCount + 1;
+    await updateEpisodeCount();
+    isValidNumber();
+}
+
+const isValidDecrement = async () => {
+    disableElements();
+
+    const episodeCount = Number(watchedEpisodes.value);
+
+    if (episodeCount - 1 < 0) {
+        invalidNumber.textContent = 'Invalid number';
+        enableElements();
+        return;
+    }
+
+    watchedEpisodes.value = episodeCount - 1;
+    await updateEpisodeCount();
+    isValidNumber();
+}
+
+const isValidNumber = () => {
+    const maxEpisodes = Number(totalEpisodes.value);
+    const episodeCount = Number(watchedEpisodes.value);
+
+    if (episodeCount === maxEpisodes || episodeCount >= 0) {
+        invalidNumber.textContent = '';
+    }
+}
+
+const deleteFromCollection = async () => {
+    const titleId = document.querySelector('.title-information').dataset.id;
+    
+    try {
+        const response = await fetch(`/watchlist/${titleId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to send title information to the server: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log(data.message);
         dialog.showModal();
     } catch (error) {
         console.error(error);
     }
 }
 
-statusDropdown.addEventListener('change', async () => {
+const disableElements = () => {
     statusDropdown.disabled = true;
+    ratingDropdown.disabled = true;
+    seasonsDropdown.disabled = true;
+    watchedEpisodes.disabled = true;
+    incrementBtn.disabled = true;
+    decrementBtn.disabled = true;
+    deleteBtn.disabled = true;
+}
+
+const enableElements = () => {
+    statusDropdown.disabled = false;
+    ratingDropdown.disabled = false;
+    seasonsDropdown.disabled = false;
+    watchedEpisodes.disabled = false;
+    incrementBtn.disabled = false;
+    decrementBtn.disabled = false;
+    deleteBtn.disabled = false;
+}
+
+statusDropdown.addEventListener('change', async () => {
+    disableElements();
     await updateStatus();
 });
 
 ratingDropdown.addEventListener('change', async () => {
-    ratingDropdown.disabled = true;
+    disableElements();
     await updateRating();
 });
 
 deleteBtn.addEventListener('click', async () => {
-    deleteBtn.disabled = true;
-    statusDropdown.disabled = true;
-    ratingDropdown.disabled = true;
+    disableElements();
     await deleteFromCollection();
 });
 
 closeBtn.addEventListener('click', () => {
     dialog.close();
-})
+});
+
+seasonsDropdown.addEventListener('change', () => {
+    const selectedSeason = Number(seasonsDropdown.value);
+    const foundSeason = seasons.find(seasonNumber => seasonNumber.season === selectedSeason);
+    if (foundSeason) {
+        invalidNumber.textContent = '';
+        totalEpisodes.value = foundSeason.total_episodes;
+        watchedEpisodes.value = foundSeason.watched_episodes;
+    }
+});
+
+watchedEpisodes.addEventListener('change', (e) => {
+    changeEpisodeCount(e);
+});
+
+incrementBtn.addEventListener('click', () => {
+    isValidIncrement();
+});
+
+decrementBtn.addEventListener('click', () => {
+    isValidDecrement();
+});

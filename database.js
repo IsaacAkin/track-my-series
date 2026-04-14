@@ -44,7 +44,14 @@ export const addToCollection = async (id, title, type, startYear, endYear, plot,
             endYear: endYear, 
             plot: plot, 
             thumbnail: thumbnail, 
-            status: 'plan-to-watch' 
+            status: 'plan-to-watch',
+            seasons: type != 'movie' 
+            ? [
+                {"season": 1, "total_episodes": 1, "watched_episodes": 0}
+            ] 
+            : [
+                {"total_episodes": 1, "watched_episodes": 0}
+            ]
         };
 
         const result = await collection.insertOne(query);
@@ -100,7 +107,7 @@ export const updateTitleRating = async (titleId, newRating) => {
         const filter = { _id: titleId };
         const updateDoc = {
             $set: {
-                rating: parseInt(newRating)
+                rating: Number(newRating)
             }
         };
     
@@ -111,6 +118,43 @@ export const updateTitleRating = async (titleId, newRating) => {
         console.error(error);
     } finally {
         await client.close();
+    }
+}
+
+export const updateEpisodeCount = async (titleId, seasonNumber, episodeCount, totalEpisodes) => {
+    try {
+        await connectToDatabase();
+        const collection = client.db(trackMySeriesDB).collection(titlesCollection);
+        
+        const documentToChange = await collection.findOne({ _id: titleId });
+        if (documentToChange === undefined) {
+            throw new Error(`Could not find _id in the ${titlesCollection} collection.`);
+        }
+
+        if (episodeCount > totalEpisodes) {
+            throw new Error("Episode count can not exceed the total amount of episodes.");
+        } else if (episodeCount < 0) {
+            throw new Error("Episode count cannot be less than 0");
+        }
+        
+        const filter = { 
+            _id: titleId,
+            "seasons.season": Number(seasonNumber)
+         };
+        const updateDoc = {
+            $set: {
+                "seasons.$.watched_episodes": Number(episodeCount)
+            }
+        };
+    
+        const result = await collection.updateOne(filter, updateDoc);
+        if (result.matchedCount === 0) { console.log(`Season not found in '${documentToChange.title}'`); }
+        result.modifiedCount > 0 ? console.log(`Updated ${result.modifiedCount} document.`) : console.log(`${result.modifiedCount} documents updated.`);
+        console.log(`Updated the watched episodes of '${documentToChange.title}' to '${episodeCount}'.`);
+    } catch (error) {
+        console.error(error);
+    } finally{
+        client.close();
     }
 }
 
