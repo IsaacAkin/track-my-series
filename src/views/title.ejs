@@ -9,19 +9,31 @@
   </head>
   <body>
     <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
-    <div class="title-information" id="<%= title.id %>" data-id="<%= title.id %>">
-        <p class="primary-title"><%= title.title %></p>
-        <p class="type"><%= title.type %></p>
-        <p class="start-year"><%= title.startYear %></p>
-        <p class="end-year"><%= title.endYear %></p>
-        <p class="rating"><%= title.rating %></p>
-        <p class="plot"><%= title.plot %></p>
-        <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="full-thumbnail">
-        <button type="submit" class="submit-btn">Add to Watchlist</button>
-    </div>
-    <dialog class="title-added">
-      <p>'<%= title.title %>' has been added to 'plan to watch'.</p>
-      <button type="button">Close</button>
-    </dialog>
+    <div class="container">
+        <div class="title-information" id="<%= title.id %>" data-id="<%= title.id %>">
+          <div class="thumbnail-container">
+            <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="full-thumbnail">
+            <div class="add-remove">
+              <button type="submit" class="submit-btn">Add to Watchlist</button>
+            </div>
+          </div>
+          <div class="example">
+            <div class="context">
+              <p class="primary-title"><%= title.title %></p>
+              <p class="type"><%= title.type === 'movie' ? 'Movie' : 'TV Series' %></p>
+              <p class="plot"><%= title.plot %></p>
+            </div>
+            <div class="status-buttons">
+              <p class="start-year"><%= title.startYear %></p>
+              <p class="end-year"><%= title.endYear %></p>
+              <p class="rating"><%= title.rating %></p>
+            </div>
+          </div>
+          <dialog class="title-added">
+            <p>'<%= title.title %>' has been added to 'plan to watch'.</p>
+            <button type="button">Close</button>
+          </dialog>
+        </div>
+      </div>
   </body>
 </html>

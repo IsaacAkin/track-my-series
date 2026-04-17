@@ -10,22 +10,26 @@
   <body>
     <%- include('partials/header', { watchlistLinks: watchlistLinks }) %>
     <h2>Found <%= results.length %> results for: <%= searchTerm %></h2>
-    <div class="results">
-      <% results.forEach(series => { %>
-        <div class="card" data-id="<%= series.id %>">
-          <div class="image-container">
-            <img src="<%= series.thumbnail %>" alt="<%= series.originalTitle %> poster image" class="thumbnail">
+    <div class="container">
+      <div class="results-list">
+        <% results.forEach(series => { %>
+          <div class="card" data-id="<%= series.id %>">
+            <div class="image-container">
+              <img src="<%= series.thumbnail %>" alt="<%= series.originalTitle %> poster image" class="thumbnail">
+            </div>
+            <div class="text-container">
+              <p class="primary-title"><a href="/title/<%= series.id %>"><%= series.title %></a></p>
+              <!-- <p class="original-title"><%= series.originalTitle %></p> -->
+              <div class="format">
+                <p class="type"><%= series.type === 'tvSeries' || series.type === 'tvMiniSeries' ? 'TV Series' : 'Movie' %></p>
+                <p class="start-year"><%= series.startYear %></p>
+                <p class="rating"><%= series.rating %></p>
+                <!-- <p class="overview"><%= series.plot %></p> -->
+              </div>
+            </div>
           </div>
-          <div class="text-container">
-            <p><%= series.type %></p>
-            <p><a href="/title/<%= series.id %>"><%= series.title %></a></p>
-          </div>
-          <div class="text-container-two">
-            <p><%= series.originalTitle %></p>
-            <p><%= series.rating %></p>
-          </div>
-        </div>
-      <% }) %>
+        <% }) %>
+      </div>
     </div>
   </body>
 </html>
