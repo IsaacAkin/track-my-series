@@ -7,7 +7,7 @@ export async function getSeries(req, res) {
         const { searchTerm } = req.query;
     
         if (!searchTerm) {
-            return res.render('search', { searchTerm: '', results: [] });
+            return res.render('search', { searchTerm: '', results: [], watchlistLinks });
         }
         
         const response = await fetch(`https://api.imdbapi.dev/search/titles?query=${encodeURIComponent(searchTerm)}`); // added encoding to prevent url injection
