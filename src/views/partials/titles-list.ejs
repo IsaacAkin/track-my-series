@@ -1,18 +1,22 @@
-<div class="results">
-    <% if (titles.length === 0) { %>
-    <p><%= message %></p>
-    <% } %>
-    <% titles.forEach(title => { %>
-    <div class="card">
-        <div class="image-container">
-            <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+<div class="container">
+    <div class="results-list">
+        <% if (titles.length === 0) { %>
+        <p><%= message %></p>
+        <% } %>
+        <% titles.forEach(title => { %>
+        <div class="card">
+            <div class="image-container">
+                <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
+            </div>
+            <div class="text-container">
+                <p class="primary-title"><a href="/watchlist/<%= title._id %>/<%= encodeURIComponent(title.title) %>"><%= title.title %></a></p>
+                <div class="format">
+                    <p class="type"><%= title.type === 'tvSeries' || title.type === 'tvMiniSeries' ? 'TV Series' : 'Movie' %></p>
+                    <p class="start-year"><%= title.startYear %></p>
+                    <!-- <p class="overview"><%= title.plot %></p> -->
+                </div>
+            </div>
         </div>
-        <div class="text-container">
-            <p class="type"><%= title.type %></p>
-            <p class="primary-title"><a href="/watchlist/<%= title._id %>/<%= encodeURIComponent(title.title) %>"><%= title.title %></a></p>
-            <!-- <p class="start-year"><%= title.startYear %></p> -->
-            <!-- <p class="end-year"><%= title.endYear %></p> -->
-        </div>
+        <% }) %>
     </div>
-    <% }) %>
 </div>

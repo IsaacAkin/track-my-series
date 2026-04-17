@@ -1,7 +1,10 @@
 const statusDropdown = document.querySelector('#status');
 const ratingDropdown = document.querySelector('#rating');
 const deleteBtn = document.querySelector('.delete-btn');
-const dialog = document.querySelector('.successfully-deleted');
+const confirmDeleteDialog = document.querySelector('.confirm-deletion');
+const noDeleteBtn = document.querySelector('.no-delete');
+const yesDeleteBtn = document.querySelector('.yes-delete');
+const successDialog = document.querySelector('.successfully-deleted');
 const closeBtn = document.querySelector('.successfully-deleted > button');
 const seasonsDropdown = document.querySelector('#seasons');
 const totalEpisodes = document.querySelector('#total_episodes');
@@ -170,7 +173,7 @@ const deleteFromCollection = async () => {
         
         const data = await response.json();
         console.log(data.message);
-        dialog.showModal();
+        successDialog.showModal();
     } catch (error) {
         console.error(error);
     }
@@ -180,6 +183,7 @@ const disableElements = () => {
     statusDropdown.disabled = true;
     ratingDropdown.disabled = true;
     seasonsDropdown.disabled = true;
+    totalEpisodes.disabled = true;
     watchedEpisodes.disabled = true;
     incrementBtn.disabled = true;
     decrementBtn.disabled = true;
@@ -190,6 +194,7 @@ const enableElements = () => {
     statusDropdown.disabled = false;
     ratingDropdown.disabled = false;
     seasonsDropdown.disabled = false;
+    totalEpisodes.disabled = false;
     watchedEpisodes.disabled = false;
     incrementBtn.disabled = false;
     decrementBtn.disabled = false;
@@ -206,13 +211,22 @@ ratingDropdown.addEventListener('change', async () => {
     await updateRating();
 });
 
-deleteBtn.addEventListener('click', async () => {
+deleteBtn.addEventListener('click', () => {
+    confirmDeleteDialog.showModal();
+});
+
+noDeleteBtn.addEventListener('click', () => {
+    confirmDeleteDialog.close();
+});
+
+yesDeleteBtn.addEventListener('click', async () => {
     disableElements();
+    confirmDeleteDialog.close();
     await deleteFromCollection();
 });
 
 closeBtn.addEventListener('click', () => {
-    dialog.close();
+    successDialog.close();
 });
 
 seasonsDropdown.addEventListener('change', () => {
