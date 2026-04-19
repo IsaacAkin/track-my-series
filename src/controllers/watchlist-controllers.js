@@ -67,9 +67,9 @@ export const changeTitleRating = async (req, res) => {
 export const changeEpisodeCount = async (req, res) => {
     try {
         const { id } = req.params;
-        const { seasonNumber, episodeCount, maxEpisodes } = req.body;
+        const { titleType, seasonNumber, episodeCount, maxEpisodes } = req.body;
 
-        await updateEpisodeCount(id, seasonNumber, episodeCount, maxEpisodes);
+        await updateEpisodeCount(id, titleType, seasonNumber, episodeCount, maxEpisodes);
         res.status(200).json({ message: `Successfully changed watched episode count to ${episodeCount}`});
     } catch (error) {
         console.error(error);
@@ -100,7 +100,7 @@ const verifyStatus = (res, status) => {
     ];
 
     if (!views.includes(status)) {
-        res.status(404).send(`'${status}' not found.`);
+        res.status(404).send(`'${status}' status not found.`);
         return false;
     }
 

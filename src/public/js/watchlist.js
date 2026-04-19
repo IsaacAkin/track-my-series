@@ -69,11 +69,13 @@ const updateRating = async () => {
 
 const updateEpisodeCount = async () => {
     const titleId = document.querySelector('.title-information').dataset.id;
+    const titleType = document.querySelector('.type').textContent.toLowerCase();
     const seasonNumber = Number(seasonsDropdown.value);
     const maxEpisodes = Number(totalEpisodes.value);
     const episodeCount = Number(watchedEpisodes.value);
 
     const payload = {
+        titleType,
         seasonNumber,
         episodeCount,
         maxEpisodes

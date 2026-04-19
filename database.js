@@ -121,7 +121,7 @@ export const updateTitleRating = async (titleId, newRating) => {
     }
 }
 
-export const updateEpisodeCount = async (titleId, seasonNumber, episodeCount, totalEpisodes) => {
+export const updateEpisodeCount = async (titleId, titleType, seasonNumber, episodeCount, totalEpisodes) => {
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
@@ -136,16 +136,31 @@ export const updateEpisodeCount = async (titleId, seasonNumber, episodeCount, to
         } else if (episodeCount < 0) {
             throw new Error("Episode count cannot be less than 0");
         }
+
+        let filter = {};
+        let updateDoc = {};
         
-        const filter = { 
-            _id: titleId,
-            "seasons.season": Number(seasonNumber)
-         };
-        const updateDoc = {
-            $set: {
-                "seasons.$.watched_episodes": Number(episodeCount)
-            }
-        };
+        if (titleType != 'movie') {
+            filter = { 
+                _id: titleId,
+                "seasons.season": Number(seasonNumber)
+            };
+            updateDoc = {
+                $set: {
+                    "seasons.$.watched_episodes": Number(episodeCount)
+                }
+            };    
+        } else {
+            filter = { 
+                _id: titleId,
+                "seasons.total_episodes": 1
+             };
+            updateDoc = {
+                $set: {
+                    "seasons.$.watched_episodes": Number(episodeCount)
+                }
+            };
+        }
     
         const result = await collection.updateOne(filter, updateDoc);
         if (result.matchedCount === 0) { console.log(`Season not found in '${documentToChange.title}'`); }
