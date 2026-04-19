@@ -11,7 +11,7 @@ export const watchlistLinks = [
 ];
 
 router.get('/:status', displayTitles);
-router.get('/:id/:name', getSingleTitle);
+router.get('/title/:id', getSingleTitle);
 
 router.patch('/:id/newrating', changeTitleRating);
 router.patch('/:id/newstatus', changeTitleStatus);

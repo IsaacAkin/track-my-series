@@ -9,7 +9,7 @@
                 <img src="<%= title.thumbnail %>" alt="<%= title.title %> poster image" class="thumbnail">
             </div>
             <div class="text-container">
-                <p class="primary-title"><a href="/watchlist/<%= title._id %>/<%= encodeURIComponent(title.title) %>"><%= title.title %></a></p>
+                <p class="primary-title"><a href="/watchlist/title/<%= title._id %>"><%= title.title %></a></p>
                 <div class="format">
                     <p class="type"><%= title.type === 'tvSeries' || title.type === 'tvMiniSeries' ? 'TV Series' : 'Movie' %></p>
                     <p class="start-year"><%= title.startYear %></p>
