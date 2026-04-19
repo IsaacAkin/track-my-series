@@ -12,7 +12,7 @@ export const watchlistLinks = [
 
 router.get('/', (req, res) => res.render('index', { watchlistLinks }));
 router.get('/search', getSeries);
-router.get('/title/:id', fetchTitleInfo);
+router.get('/watchlist/title/:id', fetchTitleInfo);
 
 router.post('/title', addTitleToDatabase);
 

@@ -18,7 +18,7 @@
               <img src="<%= series.thumbnail %>" alt="<%= series.originalTitle %> poster image" class="thumbnail">
             </div>
             <div class="text-container">
-              <p class="primary-title"><a href="/title/<%= series.id %>"><%= series.title %></a></p>
+              <p class="primary-title"><a href="/watchlist/title/<%= series.id %>"><%= series.title %></a></p>
               <!-- <p class="original-title"><%= series.originalTitle %></p> -->
               <div class="format">
                 <p class="type"><%= series.type === 'tvSeries' || series.type === 'tvMiniSeries' ? 'TV Series' : 'Movie' %></p>
