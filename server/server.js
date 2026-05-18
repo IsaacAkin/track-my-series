@@ -1,27 +1,19 @@
+import cors from 'cors';
 import 'dotenv/config.js';
-import path from 'node:path';
 import express from "express";
-import { fileURLToPath } from "node:url";
-import indexRouter from "./src/routes/index-routes.js";
+// import indexRouter from "./src/routes/index-routes.js";
+import titleRouter from "./src/routes/title-routes.js";
 import watchlistRouter from "./src/routes/watchlist-routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const assetsPath = path.join(__dirname, 'src/public'); // for accessing css and js
-
-app.set('views', [
-    path.join(__dirname, 'src/views'),
-    path.join(__dirname, 'src/views/watchlist')
-]);
-app.set('view engine', 'ejs'); // views templete is set to use ejs
-app.use(express.static(assetsPath));
+app.use(cors());
 app.use(express.json()); // to parse JSON data into req.body
 
-app.use('/', indexRouter);
-app.use('/watchlist', watchlistRouter);
+// app.use('/api', indexRouter);
+app.use('/api/title', titleRouter);
+app.use('/api/watchlist', watchlistRouter);
 
 app.use((req, res) => {
     res.status(404).send('Page not found.');
