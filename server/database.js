@@ -200,6 +200,33 @@ export const getTitlesWithStatus = async (status) => {
     }
 }
 
+/** returns a populated array of all series from the titles collection */
+export const getAllTitles = async () => {
+    const titles = [];
+
+    try {
+        await connectToDatabase();
+        const collection = client.db(trackMySeriesDB).collection(titlesCollection);
+        const query = collection.find().sort({ title: 1 }); // sorts results in alphabetical order
+
+        for await (const title of query) {
+            titles.push(title);
+        }
+
+        if (titles.length === 0) {
+            console.log(`No titles found.`);
+            return titles;
+        }
+        
+        console.log(`${titles.length} titles found.`);
+        return titles;
+    } catch (error) {
+        console.error(error);
+    } finally {
+        client.close();
+    }
+}
+
 /** returns the information of a single title in the database based on the ID provided */
 export const getTitle = async (titleId) => {
     try {
