@@ -1,97 +1,43 @@
-import { watchlistLinks } from "../routes/watchlist-routes.js";
-import { getTitlesWithStatus, getTitle, updateTitleStatus, deleteTitle, updateTitleRating, updateEpisodeCount, listOfStatuses, listOfRatings } from "../../database.js";
+import { getAllTitles, getTitlesWithStatus } from "../../database.js";
+
+export const fetchAllWatchlistTitles = async (req, res) => {
+    try {
+        const titles = await getAllTitles();
+
+        res.json({ titles });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'Failed to fetch titles.'
+        });
+    }
+}
 
 /** gets all titles with the specified status and renders them on the specified page */
-export const displayTitles = async (req, res) => {
+export const fetchWatchlistTitles = async (req, res) => {
     try {
         const { status } = req.params;
     
-        if (!verifyStatus(res, status)) { return };
+        if (!verifyStatus(status)) {
+            return res.status(404).json({
+                message: `${status} not found`
+            });
+        };
     
         const titles = await getTitlesWithStatus(status);
-        const message = 'Nothing has been added yet';
         
-        res.render(status, { titles, message, status , watchlistLinks });
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-/** gets a single title from the specified collection via its ID and renders it */
-export const getSingleTitle = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const title = await getTitle(id);
-    
-        if (!title) {
-            res.status(404).send('Title not found.');
-            return;
-        }
-    
-        res.render('watchlist-title', { title, listOfStatuses, listOfRatings, watchlistLinks });
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-/** updates a titles status to the selected option passed in the req.body */
-export const changeTitleStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { newStatus } = req.body;
+        res.json({ titles });
         
-        await updateTitleStatus(id, newStatus);
-        res.status(200).json({ message: `Successfully changed title status to '${newStatus}.'` });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Failed to update title status.' });
-    }
-
-
-}
-
-/** updates a titles rating to the selected option passed in the req.body */
-export const changeTitleRating = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { newRating } = req.body;
-    
-        await updateTitleRating(id, newRating);
-        res.status(200).json({ message: `Successfully changed title rating to '${newRating}'.` });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Failed to update title rating.' });
-    }
-}
-
-export const changeEpisodeCount = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { titleType, seasonNumber, episodeCount, maxEpisodes } = req.body;
-
-        await updateEpisodeCount(id, titleType, seasonNumber, episodeCount, maxEpisodes);
-        res.status(200).json({ message: `Successfully changed watched episode count to ${episodeCount}`});
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Failed to update episode count.' });
-    }
-}
-
-/** recieves titleId from the req.params and removes it from the collection */
-export const deleteSingleTitle = async (req, res) => {
-    try {
-        const { id } = req.params;
-    
-        await deleteTitle(id);
-        res.status(200).json({ message: 'Successfully deleted title from the collection.' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Failed to delete title from the collection.' });
+        res.status(500).json({
+            message: 'Failed to fetch titles.'
+        });
     }
 }
 
 /** checks to see if the specified collection is a valid collection */
-const verifyStatus = (res, status) => {
+const verifyStatus = (status) => {
     const views = [
         'plan-to-watch',
         'watching',
@@ -100,7 +46,6 @@ const verifyStatus = (res, status) => {
     ];
 
     if (!views.includes(status)) {
-        res.status(404).send(`'${status}' status not found.`);
         return false;
     }
 
