@@ -3,6 +3,7 @@ import Home from './pages/Home.jsx';
 import Search from './pages/Search.jsx';
 import Title from './pages/Title.jsx';
 import Watchlist from './pages/watchlist/Watchlist.jsx';
+import AllTitles from './pages/watchlist/AllTitles.jsx';
 import Watching from './pages/watchlist/Watching.jsx';
 import Paused from './pages/watchlist/Paused.jsx';
 import Completed from './pages/watchlist/Completed.jsx';
@@ -25,7 +26,8 @@ export const router = createBrowserRouter([
         path: 'watchlist',
         Component: Watchlist,
         children: [
-            { index: true, Component: Watching },
+            { index: true, Component: AllTitles },
+            { path: 'watching', Component: Watching },
             { path: 'paused', Component: Paused },
             { path: 'completed', Component: Completed },
             { path: 'planning', Component: Planning }
