@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TitlesList from "../../components/TitlesList";
+import { fetchTitlesFromDatabase } from "../../services/api.js";
 
 export default function AllTitles() {
     const [allTitles, setAllTitles] = useState(null);
@@ -8,17 +9,12 @@ export default function AllTitles() {
 
     useEffect(() => {
         let ignore = false;
-        async function fetchWatching() {
+        async function fetchAllTitles() {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist`);
-
-                if (!response) {
-                    throw new Error(`Error ${response.status}`);
-                }
+                const response = await fetchTitlesFromDatabase();
 
                 if (!ignore) {
-                    const data = await response.json();
-                    setAllTitles(data.titles);
+                    setAllTitles(response.titles);
                 }
             } catch (err) {
                 setError(err);
@@ -27,7 +23,7 @@ export default function AllTitles() {
             }
         }
 
-        fetchWatching();
+        fetchAllTitles();
 
         return () => {
             ignore = true;

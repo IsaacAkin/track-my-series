@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TitlesList from "../../components/TitlesList";
+import { fetchTitlesFromDatabase } from "../../services/api.js";
 
 export default function Paused() {
     const [paused, setPaused] = useState(null);
@@ -8,17 +9,12 @@ export default function Paused() {
 
     useEffect(() => {
         let ignore = false;
-        async function fetchWatching() {
+        async function fetchPaused() {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist/on-hold`);
-
-                if (!response) {
-                    throw new Error(`Error ${response.status}`);
-                }
+                const response = await fetchTitlesFromDatabase('on-hold');
 
                 if (!ignore) {
-                    const data = await response.json();
-                    setPaused(data.titles);
+                    setPaused(response.titles);
                 }
             } catch (err) {
                 setError(err);
@@ -27,7 +23,7 @@ export default function Paused() {
             }
         }
 
-        fetchWatching();
+        fetchPaused();
 
         return () => {
             ignore = true;

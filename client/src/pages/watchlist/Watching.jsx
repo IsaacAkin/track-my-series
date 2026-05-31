@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TitlesList from "../../components/TitlesList";
+import { fetchTitlesFromDatabase } from "../../services/api.js";
 
 export default function Watching() {
     const [watching, setWatching] = useState(null);
@@ -10,15 +11,10 @@ export default function Watching() {
         let ignore = false;
         async function fetchWatching() {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist/watching`);
-
-                if (!response) {
-                    throw new Error(`Error ${response.status}`);
-                }
+                const response = await fetchTitlesFromDatabase('watching');
 
                 if (!ignore) {
-                    const data = await response.json();
-                    setWatching(data.titles);
+                    setWatching(response.titles);
                 }
             } catch (err) {
                 setError(err);

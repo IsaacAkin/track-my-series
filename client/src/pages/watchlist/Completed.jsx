@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TitlesList from "../../components/TitlesList";
+import { fetchTitlesFromDatabase } from "../../services/api.js";
 
 export default function Completed() {
     const [completed, setCompleted] = useState(null);
@@ -8,17 +9,12 @@ export default function Completed() {
 
     useEffect(() => {
         let ignore = false;
-        async function fetchWatching() {
+        async function fetchCompleted() {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist/completed`);
-
-                if (!response) {
-                    throw new Error(`Error ${response.status}`);
-                }
+                const response = await fetchTitlesFromDatabase('completed');
 
                 if (!ignore) {
-                    const data = await response.json();
-                    setCompleted(data.titles);
+                    setCompleted(response.titles);
                 }
             } catch (err) {
                 setError(err);
@@ -27,7 +23,7 @@ export default function Completed() {
             }
         }
 
-        fetchWatching();
+        fetchCompleted();
 
         return () => {
             ignore = true;

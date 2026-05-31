@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TitlesList from "../../components/TitlesList";
+import { fetchTitlesFromDatabase } from "../../services/api.js";
 
 export default function Planning() {
     const [planning, setPlanning] = useState(null);
@@ -8,17 +9,12 @@ export default function Planning() {
 
     useEffect(() => {
         let ignore = false;
-        async function fetchWatching() {
+        async function fetchPlanning() {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist/plan-to-watch`);
-
-                if (!response) {
-                    throw new Error(`Error ${response.status}`);
-                }
+                const response = await fetchTitlesFromDatabase('plan-to-watch');
 
                 if (!ignore) {
-                    const data = await response.json();
-                    setPlanning(data.titles);
+                    setPlanning(response.titles);
                 }
             } catch (err) {
                 setError(err);
@@ -27,7 +23,7 @@ export default function Planning() {
             }
         }
 
-        fetchWatching();
+        fetchPlanning();
 
         return () => {
             ignore = true;
