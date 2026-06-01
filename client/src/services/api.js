@@ -1,3 +1,16 @@
+// GET
+export const fetchTitleInformation = async (id) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${id}`);
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+    }
+
+    return response.json();
+}
+
+// GET
 export const fetchTitlesFromDatabase = async (watchStatus) => {
     let response;
 

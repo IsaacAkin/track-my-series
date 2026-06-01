@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar.jsx";
 import { useParams } from "react-router";
 import { useState, useEffect } from "react";
+import { fetchTitleInformation } from "../services/api.js";
 
 function ApiTitle({ title }) {
     return (
@@ -13,6 +14,7 @@ function ApiTitle({ title }) {
                     <div className="context">
                         <p className="primary-title">{title.title}</p>
                         {title.type === 'tvSeries' && <p className="type">TV Series</p>}
+                        {title.type === 'tvMiniSeries' && <p className="type">TV Mini Series</p>}
                         {title.type === 'movie' && <p className="type">Movie</p>}
                         <p className="plot">{title.plot}</p>
                     </div>
@@ -36,6 +38,7 @@ function DatabaseTitle({ title }) {
                     <div className="context">
                         <p className="primary-title">{title.title}</p>
                         {title.type === 'tvSeries' && <p className="type">TV Series</p>}
+                        {title.type === 'tvMiniSeries' && <p className="type">TV Mini Series</p>}
                         {title.type === 'movie' && <p className="type">Movie</p>}
                         <p className="plot">{title.plot}</p>
                     </div>
@@ -60,15 +63,9 @@ export default function Title() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        async function fetchTitle() {
+        async function getTitle() {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${id}`);
-
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}`);
-                }
-
-                const data = await response.json();
+                const data = await fetchTitleInformation(id);
                 setTitle(data.title);   
             } catch (error) {
                 setError(error);
@@ -77,7 +74,7 @@ export default function Title() {
             }
         }
 
-        fetchTitle();
+        getTitle();
     }, [id])
 
     return(
@@ -86,8 +83,8 @@ export default function Title() {
             <>
                 {error && <p style={{ textAlign: 'center', color: 'white'}}>Error loading content</p>}
                 {loading && <p style={{ textAlign: 'center', color: 'white'}}>Loading...</p>}
-                { title && title.id && <ApiTitle title={title} /> }
-                { title && title._id && <DatabaseTitle title={title} /> }
+                {title && title.id && <ApiTitle title={title} /> }
+                {title && title._id && <DatabaseTitle title={title} /> }
             </>
         </div>
     )
