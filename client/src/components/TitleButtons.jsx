@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { addToDatabase } from "../services/api.js";
+import { addToDatabase, removeTitleFromDatabase } from "../services/api.js";
 
-export function AddTitleBtn({ title }) {
+export const AddTitleBtn = ({ title }) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -32,4 +32,37 @@ export function AddTitleBtn({ title }) {
             }
         </div>
     )
+}
+
+export const DeleteTitleBtn = ({ id }) => {
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const deteleTitle = async () => {
+        setLoading(true);
+        
+        try {
+            const response = await removeTitleFromDatabase(id);
+            console.log(response.message);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div>
+            { error && <p>Error deleting title</p> }
+            {
+                loading
+                ? 
+                <>
+                    <p>Deleting...</p>
+                    <button onClick={deteleTitle} className="hidden" >🗑️</button>
+                </>
+                : <button onClick={deteleTitle}>🗑️</button>
+            }
+        </div>
+    )   
 }

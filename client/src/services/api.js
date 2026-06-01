@@ -44,3 +44,18 @@ export const addToDatabase = async (title) => {
 
     return response.json();
 }
+
+// DELETE
+export const removeTitleFromDatabase = async (id) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+    }
+
+    return response.json();
+}
