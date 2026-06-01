@@ -28,3 +28,19 @@ export const fetchTitlesFromDatabase = async (watchStatus) => {
 
     return response.json();
 }
+
+// POST
+export const addToDatabase = async (title) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${title.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(title)
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+    }
+
+    return response.json();
+}

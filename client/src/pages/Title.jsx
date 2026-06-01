@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar.jsx";
 import { useParams } from "react-router";
 import { useState, useEffect } from "react";
 import { fetchTitleInformation } from "../services/api.js";
+import AddTitleBtn from "../components/AddTitleBtn.jsx";
 
 function ApiTitle({ title }) {
     return (
@@ -20,6 +21,7 @@ function ApiTitle({ title }) {
                     </div>
                     <div className="status-buttons">
                         <p>Rating: {title.rating}</p>
+                        <AddTitleBtn title={title} />
                     </div>
                 </div>
             </div>
