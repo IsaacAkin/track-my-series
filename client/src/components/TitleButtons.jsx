@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { addToDatabase } from "../services/api.js";
 
-export default function AddTitleBtn({ title }) {
+export function AddTitleBtn({ title }) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
