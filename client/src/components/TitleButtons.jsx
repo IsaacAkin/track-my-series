@@ -5,11 +5,12 @@ export const AddTitleBtn = ({ title }) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const addTitle = async () => {
+    const addTitle = async (e) => {
+        const selectedStatus = e.target.value;
         setLoading(true);
         
         try {
-            const response = await addToDatabase(title);
+            const response = await addToDatabase(title, selectedStatus);
             console.log(response.message);
         } catch (error) {
             setError(error);
@@ -26,9 +27,15 @@ export const AddTitleBtn = ({ title }) => {
                 ? 
                 <>
                     <p>Adding...</p>
-                    <button onClick={addTitle} className="hidden" >Add to Watchlist</button>
                 </>
-                : <button onClick={addTitle}>Add to Watchlist</button>
+                :
+                    <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={''} onChange={addTitle}>
+                        <option value="" disabled>Add to Watchlist</option>
+                        <option value="plan-to-watch">Planning</option>
+                        <option value="completed">Completed</option>
+                        <option value="on-hold">Paused</option>
+                        <option value="watching">Watching</option>
+                    </select>
             }
         </div>
     )

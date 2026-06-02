@@ -68,15 +68,15 @@ export const fetchTitle = async (req, res) => {
 export async function addTitleToDatabase(req, res) {
     try {
         const { id } = req.params
-        const { title, type, startYear, endYear, plot, thumbnail } = req.body;
+        const { title, type, startYear, endYear, plot, thumbnail, status } = req.body;
 
         if (!id || !title) {
             return res.status(400).json({ message: 'ID and title are required.' });
         }
     
-        await addToCollection(id, title, type, startYear, endYear, plot, thumbnail);
+        await addToCollection(id, title, type, startYear, endYear, plot, thumbnail, status);
 
-        res.status(201).json({ message: `'${title}' has been added to the collection.` });
+        res.status(201).json({ message: `'${title}' has been added to the collection and set to '${status}'.` });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to add title to the database.' });

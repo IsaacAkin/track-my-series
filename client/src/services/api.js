@@ -30,11 +30,14 @@ export const fetchTitlesFromDatabase = async (watchStatus) => {
 }
 
 // POST
-export const addToDatabase = async (title) => {
+export const addToDatabase = async (title, watchStatus) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${title.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(title)
+        body: JSON.stringify({ 
+            ...title, 
+            status: watchStatus
+        })
     });
 
     if (!response.ok) {

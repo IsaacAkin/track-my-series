@@ -2,8 +2,8 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.URI;
 const client = new MongoClient(uri);
-const trackMySeriesDB = 'track-my-series';
-const titlesCollection = 'titles';
+const trackMySeriesDB = process.env.DATABASE;
+const titlesCollection = process.env.COLLECTION;
 
 export const listOfStatuses = [
     { value: 'plan-to-watch', label: 'Plan To Watch'},
@@ -32,7 +32,7 @@ const connectToDatabase = async () => {
 }
 
 /** adds a new series/movie document into the titles collection */
-export const addToCollection = async (id, title, type, startYear, endYear, plot, thumbnail) => {
+export const addToCollection = async (id, title, type, startYear, endYear, plot, thumbnail, status) => {
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
@@ -44,7 +44,7 @@ export const addToCollection = async (id, title, type, startYear, endYear, plot,
             endYear: endYear, 
             plot: plot, 
             thumbnail: thumbnail, 
-            status: 'plan-to-watch',
+            status: status,
             seasons: type != 'movie' 
             ? [
                 {"season": 1, "total_episodes": 1, "watched_episodes": 0}
@@ -55,7 +55,7 @@ export const addToCollection = async (id, title, type, startYear, endYear, plot,
         };
 
         const result = await collection.insertOne(query);
-        console.log(`'${title}' has been added to the '${titlesCollection}' collection with the _id: ${result.insertedId} and status of 'plan-to-watch'.`);
+        console.log(`'${title}' has been added to the '${titlesCollection}' collection with the _id: ${result.insertedId} and status of '${status}'.`);
     } catch (error) {
         console.error('Error adding series to the collection:', error);
     } finally {
