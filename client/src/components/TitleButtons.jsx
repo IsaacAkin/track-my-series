@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addToDatabase, removeTitleFromDatabase, updateTitleWatchStatus } from "../services/api.js";
+import { addToDatabase, removeTitleFromDatabase, updateTitleWatchStatus, updateTitleRating } from "../services/api.js";
 
 export const AddTitleBtn = ({ title }) => {
     const [error, setError] = useState(null);
@@ -74,6 +74,47 @@ export const UpdateStatusBtn = ({ title }) => {
                         <option value="completed">Completed</option>
                         <option value="on-hold">Paused</option>
                         <option value="watching">Watching</option>
+                    </select>
+            }
+        </div>
+    )
+}
+
+export const SetTitleRating = ({ title }) => {
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const changeRating = async (e) => {
+        const selectedRating = e.target.value;
+        setLoading(true);
+        
+        try {
+            const response = await updateTitleRating(title._id, selectedRating);
+            console.log(response.message);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div>
+            { error && <p>Error updating rating</p> }
+            {
+                loading
+                ? 
+                <>
+                    <p>Updating rating...</p>
+                </>
+                :
+                    <select name="rating-dropdown" id="rating-dropdown" defaultValue={title.rating ? title.rating : '0'} onChange={changeRating}>
+                        <option value="0">No Rating</option>
+                        <option value="1">1⭐</option>
+                        <option value="2">2⭐</option>
+                        <option value="3">3⭐</option>
+                        <option value="4">4⭐</option>
+                        <option value="5">5⭐</option>
                     </select>
             }
         </div>

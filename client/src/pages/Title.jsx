@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar.jsx";
 import { useParams } from "react-router";
 import { useState, useEffect } from "react";
 import { fetchTitleInformation } from "../services/api.js";
-import { AddTitleBtn, UpdateStatusBtn, DeleteTitleBtn } from "../components/TitleButtons.jsx";
+import { AddTitleBtn, UpdateStatusBtn, DeleteTitleBtn, SetTitleRating } from "../components/TitleButtons.jsx";
 
 function ApiTitle({ title }) {
     return (
@@ -52,6 +52,7 @@ function DatabaseTitle({ title }) {
                             <span id="watched_episodes">{title.seasons[0].watched_episodes}</span>
                         </div>
                         <UpdateStatusBtn title={title} />
+                        <SetTitleRating title={title} />
                         <DeleteTitleBtn id={title._id} />
                     </div>
                 </div>

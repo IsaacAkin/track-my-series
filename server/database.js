@@ -113,7 +113,7 @@ export const updateTitleRating = async (titleId, newRating) => {
     
         const result = await collection.updateOne(filter, updateDoc);
         result.modifiedCount > 0 ? console.log(`Updated ${result.modifiedCount} document.`) : console.log(`${result.modifiedCount} documents updated.`);
-        console.log(`Updated the rating of '${documentToChange.title}' from '${oldRating === 0 ? 'No Rating' : oldRating}' to '${newRating == 0 ? 'No Rating' : newRating}'.`);
+        console.log(`Updated the rating of '${documentToChange.title}' from '${oldRating === 0 || !oldRating ? 'No Rating' : oldRating}' to '${newRating == 0 ? 'No Rating' : newRating}'.`);
     } catch (error) {
         console.error(error);
     } finally {
