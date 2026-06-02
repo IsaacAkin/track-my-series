@@ -91,7 +91,7 @@ export const changeTitleStatus = async (req, res) => {
         
         await updateTitleStatus(id, newStatus);
 
-        res.status(200).json({ message: 'Successfully updated title status.' });
+        res.status(200).json({ message: `Successfully updated title status to '${newStatus}'.` });
 
     } catch (error) {
         console.error(error);

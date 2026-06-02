@@ -48,6 +48,22 @@ export const addToDatabase = async (title, watchStatus) => {
     return response.json();
 }
 
+// PATCH
+export const updateTitleWatchStatus = async (id, newStatus) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/status/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newStatus })
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+    }
+
+    return response.json();
+}
+
 // DELETE
 export const removeTitleFromDatabase = async (id) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${id}`, {

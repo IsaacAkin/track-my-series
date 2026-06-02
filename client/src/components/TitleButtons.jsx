@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addToDatabase, removeTitleFromDatabase } from "../services/api.js";
+import { addToDatabase, removeTitleFromDatabase, updateTitleWatchStatus } from "../services/api.js";
 
 export const AddTitleBtn = ({ title }) => {
     const [error, setError] = useState(null);
@@ -31,6 +31,45 @@ export const AddTitleBtn = ({ title }) => {
                 :
                     <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={''} onChange={addTitle}>
                         <option value="" disabled>Add to Watchlist</option>
+                        <option value="plan-to-watch">Planning</option>
+                        <option value="completed">Completed</option>
+                        <option value="on-hold">Paused</option>
+                        <option value="watching">Watching</option>
+                    </select>
+            }
+        </div>
+    )
+}
+
+export const UpdateStatusBtn = ({ title }) => {
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const changeStatus = async (e) => {
+        const selectedStatus = e.target.value;
+        setLoading(true);
+        
+        try {
+            const response = await updateTitleWatchStatus(title._id, selectedStatus);
+            console.log(response.message);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div>
+            { error && <p>Error updating status</p> }
+            {
+                loading
+                ? 
+                <>
+                    <p>Updating watch status...</p>
+                </>
+                :
+                    <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={title.status} onChange={changeStatus}>
                         <option value="plan-to-watch">Planning</option>
                         <option value="completed">Completed</option>
                         <option value="on-hold">Paused</option>

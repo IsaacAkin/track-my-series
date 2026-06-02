@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar.jsx";
 import { useParams } from "react-router";
 import { useState, useEffect } from "react";
 import { fetchTitleInformation } from "../services/api.js";
-import { AddTitleBtn, DeleteTitleBtn } from "../components/TitleButtons.jsx";
+import { AddTitleBtn, UpdateStatusBtn, DeleteTitleBtn } from "../components/TitleButtons.jsx";
 
 function ApiTitle({ title }) {
     return (
@@ -29,7 +29,7 @@ function ApiTitle({ title }) {
     )
 }
 
-function DatabaseTitle({ title, id }) {
+function DatabaseTitle({ title }) {
     return (
         <div className="container">
             <div className="title-information">
@@ -51,7 +51,8 @@ function DatabaseTitle({ title, id }) {
                             <span>/</span>
                             <span id="watched_episodes">{title.seasons[0].watched_episodes}</span>
                         </div>
-                        <DeleteTitleBtn id={id} />
+                        <UpdateStatusBtn title={title} />
+                        <DeleteTitleBtn id={title._id} />
                     </div>
                 </div>
             </div>
@@ -87,7 +88,7 @@ export default function Title() {
                 {error && <p style={{ textAlign: 'center', color: 'white'}}>Error loading content</p>}
                 {loading && <p style={{ textAlign: 'center', color: 'white'}}>Loading...</p>}
                 {title && title.id && <ApiTitle title={title} /> }
-                {title && title._id && <DatabaseTitle title={title} id={id} /> }
+                {title && title._id && <DatabaseTitle title={title} /> }
             </>
         </div>
     )
