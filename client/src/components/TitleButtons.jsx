@@ -44,6 +44,7 @@ export const AddTitleBtn = ({ title }) => {
 export const UpdateStatusBtn = ({ title }) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState(title.status);
 
     const changeStatus = async (e) => {
         const selectedStatus = e.target.value;
@@ -51,7 +52,13 @@ export const UpdateStatusBtn = ({ title }) => {
         
         try {
             const response = await updateTitleWatchStatus(title._id, selectedStatus);
+
+            if (!response.ok) {
+                console.log(response.message);
+            }
+
             console.log(response.message);
+            setStatus(selectedStatus);
         } catch (error) {
             setError(error);
         } finally {
@@ -69,7 +76,7 @@ export const UpdateStatusBtn = ({ title }) => {
                     <p>Updating watch status...</p>
                 </>
                 :
-                    <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={title.status} onChange={changeStatus}>
+                    <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={status} onChange={changeStatus}>
                         <option value="plan-to-watch">Planning</option>
                         <option value="completed">Completed</option>
                         <option value="on-hold">Paused</option>
