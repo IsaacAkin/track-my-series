@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addToDatabase, removeTitleFromDatabase, updateTitleWatchStatus, updateTitleRating } from "../services/api.js";
+import { addToDatabase, removeTitleFromDatabase, updateTitleWatchStatus, updateTitleRating, updateTitleEpisodeCount } from "../services/api.js";
 
 export const AddTitleBtn = ({ title }) => {
     const [error, setError] = useState(null);
@@ -36,6 +36,117 @@ export const AddTitleBtn = ({ title }) => {
                         <option value="on-hold">Paused</option>
                         <option value="watching">Watching</option>
                     </select>
+            }
+        </div>
+    )
+}
+
+export function SeasonsDropdown({ title }) {
+    const seasons = title.seasons;
+    const [currentSeason, setCurrentSeason] = useState(seasons[0].season);
+    const [totalEpisodes, setTotalEpisodes] = useState(title.seasons[0].total_episodes);
+    const [watchedEpisodes, setWatchedEpisodes] = useState(title.seasons[0].watched_episodes);
+
+    const fetchSeasonInformation = (e) => {
+        const foundSeason = seasons.find(season => season.season == Number(e.target.value));
+        setCurrentSeason(foundSeason);
+        setTotalEpisodes(foundSeason.total_episodes);
+        setWatchedEpisodes(foundSeason.watched_episodes);
+    }
+
+    return (
+        <>
+            {
+                seasons && title.type !== 'movie'
+                ?
+                <>
+                    <select name="seasons-dropdown" id="seasons-dropdown" defaultValue={currentSeason} onChange={fetchSeasonInformation}>
+                        {
+                            seasons.map(season => (
+                                <option key={season.season} value={season.season}>Season {season.season}</option>
+                            ))
+                        }
+                    </select>
+                    <ButtonHandler title={title} currentSeason={currentSeason} totalEpisodes={totalEpisodes} watchedEpisodes={watchedEpisodes} updateWatched={setWatchedEpisodes} />
+                </>
+                : <p>Watched</p>
+            }
+        </>
+    )
+}
+
+function ButtonHandler({ title, currentSeason, totalEpisodes, watchedEpisodes, updateWatched, onBlur }) {
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const incrementCount = async () => {
+        if (watchedEpisodes + 1 > totalEpisodes) {
+            return;
+        }
+        updateWatched(watchedEpisodes++);
+        setLoading(true);
+        
+        try {
+            const response = await updateTitleEpisodeCount(title._id, title.type, currentSeason.season, watchedEpisodes, totalEpisodes);
+            if (!response.ok) {
+                updateWatched(watchedEpisodes--);
+            }
+            console.log(response.message);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    const decrementCount = async () => {
+        if (watchedEpisodes - 1 < 0) {
+            return;
+        }
+        updateWatched(watchedEpisodes--);
+        setLoading(true);
+        
+        try {
+            const response = await updateTitleEpisodeCount(title._id, title.type, currentSeason.season, watchedEpisodes, totalEpisodes);
+            if (!response.ok) {
+                updateWatched(watchedEpisodes--);
+            }
+            console.log(response.message);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div className="episodeHandler">
+            <input type="number"
+            name="total_episodes" 
+            id="total_episodes"
+            value={totalEpisodes}
+            onChange={onBlur}
+            disabled
+            />
+            /
+            <input type="number"
+            name="watched_episodes" 
+            id="watched_episodes"
+            value={watchedEpisodes}
+            onChange={onBlur}
+            />
+            { error && <p>Error updating episode count</p> }
+            {
+                loading
+                ? 
+                <>
+                    <p>Updating episode count...</p>
+                </>
+                :
+                <>
+                    <button type="button" className="decrement-btn" onClick={decrementCount}>-</button>
+                    <button type="button" className="increment-btn" onClick={incrementCount}>+</button>
+                </>
             }
         </div>
     )

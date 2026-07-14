@@ -80,6 +80,27 @@ export const updateTitleWatchStatus = async (id, newStatus) => {
     return response.json();
 }
 
+// PATCH
+export const updateTitleEpisodeCount = async (id, titleType, seasonNumber, episodeCount, maxEpisodes) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/episodecount/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            titleType,
+            seasonNumber,
+            episodeCount,
+            maxEpisodes
+        })
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+    }
+
+    return response.json();
+}
+
 // DELETE
 export const removeTitleFromDatabase = async (id) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${id}`, {
