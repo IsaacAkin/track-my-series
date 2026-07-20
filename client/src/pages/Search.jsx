@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar.jsx";
-import { NavLink, Form } from "react-router";
+import { NavLink } from "react-router";
 import { useLoaderData } from "react-router";
 
 export default function Search() {
@@ -9,10 +9,6 @@ export default function Search() {
         <div className="app">
             <Navbar />
             <h1>Search</h1>
-            <Form action="/search" method="get">
-                <input type="text" name="searchTerm" />;
-                <button type="submit">Search</button>
-            </Form>
             <div className="container">
                 <div className="results-list">
                     {

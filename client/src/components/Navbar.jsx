@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { NavLink, Form } from "react-router";
 
 export default function Navbar() {
     return(
@@ -22,6 +22,10 @@ export default function Navbar() {
             }}>
                 <NavLink to={'/'} className={({ isActive }) => isActive ? 'active-link' : ''}>Home</NavLink>
                 <NavLink to={'/watchlist'} className={({ isActive }) => isActive ? 'active-link' : ''}>Watchlist</NavLink>
+                <Form action="/search" method="get">
+                    <input type="text" name="searchTerm" />;
+                    <button type="submit">Search</button>
+                </Form>
             </nav>
         </header>
     )
