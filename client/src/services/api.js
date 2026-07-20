@@ -11,6 +11,23 @@ export const fetchTitleInformation = async (id) => {
 }
 
 // GET
+export async function fetchTitleFromApi({ request }) {
+    const url = new URL(request.url);
+    const searchTerm = url.searchParams.get('searchTerm');
+
+    if (!searchTerm) return { results: [] };
+
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+    }
+
+    return response.json();
+}
+
+// GET
 export const fetchTitlesFromDatabase = async (watchStatus) => {
     let response;
 

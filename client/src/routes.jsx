@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import Home from './pages/Home.jsx';
 import Search from './pages/Search.jsx';
+import { fetchTitleFromApi } from './services/api.js'
 import Title from './pages/Title.jsx';
 import Watchlist from './pages/watchlist/Watchlist.jsx';
 import AllTitles from './pages/watchlist/AllTitles.jsx';
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
     {
         path: 'search',
         Component: Search,
+        loader: fetchTitleFromApi
     },
     {
         path: 'title/:id',
