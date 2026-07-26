@@ -19,7 +19,7 @@ function HasResults({ results, searchParams }) {
                                             <div className="image-container">
                                                 <img src={title.poster_src} alt={title.title} className="thumbnail" />
                                             </div>
-                                            <div className="tect-container">
+                                            <div className="text-container">
                                                 <NavLink to={`/title/${title.media_type}/${title.id}`}>
                                                     <p className="primary-title">{title.title}</p>
                                                     {title.title !== title.original_title && <p className="secondary-title">{title.original_title}</p>}
