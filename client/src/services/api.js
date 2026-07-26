@@ -10,8 +10,8 @@ export const fetchTitleInformation = async (id) => {
     return response.json();
 }
 
-// GET
-export async function fetchTitleFromApi({ request }) {
+// GET gets search results from the api
+export async function fetchTitlesFromApi({ request }) {
     const url = new URL(request.url);
     const searchTerm = url.searchParams.get('searchTerm');
 

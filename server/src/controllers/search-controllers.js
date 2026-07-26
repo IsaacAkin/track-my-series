@@ -27,12 +27,14 @@ export async function getListOfSeries(req, res) {
         .map(item => ({
             id: item.id,
             title: item.media_type === 'tv' ? item.name : item.title,
-            originalTitle: item.media_type === 'tv'
+            original_title: item.media_type === 'tv'
                 ? item.original_name
                 : item.original_title,
-            type: item.media_type,
+            media_type: item.media_type,
+            start_date: item.first_air_date || 'N/A',
+            release_date: item.release_date || 'N/A',
             rating: item.vote_average ?? 'N/A',
-            thumbnail: 'https://image.tmdb.org/t/p/w500/' + item.poster_path || ''
+            poster_src: 'https://image.tmdb.org/t/p/w500/' + item.poster_path || '',
         }));
         
         res.json({ results });
