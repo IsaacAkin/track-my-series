@@ -9,17 +9,20 @@ function ApiTitle({ title }) {
         <div className="container">
             <div className="title-information">
                 <div className="thumbnail-container">
-                    <img src={title.thumbnail} alt={title.name} className="full-thumbnail" />
+                    <img src={title.poster_src} alt={title.title} className="full-thumbnail" />
                 </div>
                 <div className="example">
                     <div className="context">
                         <p className="primary-title">{title.title}</p>
-                        {title.type === 'tvSeries' && <p className="type">TV Series</p>}
-                        {title.type === 'tvMiniSeries' && <p className="type">TV Mini Series</p>}
-                        {title.type === 'movie' && <p className="type">Movie</p>}
-                        <p className="plot">{title.plot}</p>
+                        {title.media_type === 'tv' && <p className="type">TV Series</p>}
+                        {title.media_type === 'movie' && <p className="type">Movie</p>}
+                        <p className="plot">{title.overview}</p>
                     </div>
                     <div className="status-buttons">
+                        {/* {title.start_date !== 'N/A' && <p>{title.start_date}</p>} */}
+                        {/* {title.end_date !== 'N/A' && <p>{title.end_date}</p>} */}
+                        {/* {title.release_date !== 'N/A' && <p>{title.release_date}</p>} */}
+                        {title.seasons !== 'N/A' && <p>{title.seasons.length} seasons</p>}
                         <p>Rating: {title.rating}</p>
                         <AddTitleBtn title={title} />
                     </div>
@@ -62,7 +65,7 @@ function DatabaseTitle({ title }) {
 }
 
 export default function Title() {
-    const { id } = useParams();
+    const { id, mediaType } = useParams();
     const [title, setTitle] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -70,7 +73,7 @@ export default function Title() {
     useEffect(() => {
         async function getTitle() {
             try {
-                const data = await fetchTitleInformation(id);
+                const data = await fetchTitleInformation(id, mediaType);
                 setTitle(data.title);   
             } catch (error) {
                 setError(error);
@@ -80,7 +83,7 @@ export default function Title() {
         }
 
         getTitle();
-    }, [id])
+    }, [id, mediaType])
 
     return(
         <div className="app">

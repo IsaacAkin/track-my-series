@@ -3,7 +3,7 @@ import { changeTitleRating, changeTitleStatus, fetchTitle, addTitleToDatabase, d
 
 const router = express.Router();
 
-router.get('/:id', fetchTitle);
+router.get('/:mediaType/:id', fetchTitle);
 
 router.post('/:id', addTitleToDatabase);
 

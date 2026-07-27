@@ -1,9 +1,26 @@
 import { getTitle, addToCollection, updateTitleStatus, deleteTitle, updateTitleRating, updateEpisodeCount, listOfStatuses, listOfRatings } from "../../database.js";
 
-
-const getTitleFromApi = async (id, req, res) => {
+const getTitleFromApi = async (id, mediaType, req, res) => {
     try {
-        const response = await fetch(`https://api.imdbapi.dev/titles/${id}`);
+        let response;
+        mediaType == 'tv'
+        ? response = await fetch(`https://api.themoviedb.org/3/tv/${id}`, 
+            {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: `Bearer ${process.env.EXTERNAL_API_KEY}`
+                }
+            })
+        : response = await fetch(`https://api.themoviedb.org/3/movie/${id}`, 
+            {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: `Bearer ${process.env.EXTERNAL_API_KEY}`
+                }
+            });
+            
         if (!response.ok) {
             return res.status(502).json({ message: 'Title retrieval service temporarily unavailable.' });
         }
@@ -11,14 +28,21 @@ const getTitleFromApi = async (id, req, res) => {
         const data = await response.json();
         const title = {
             id: data.id,
-            title: data.primaryTitle,
-            type: data.type,
-            startYear: data.startYear,
-            endYear: data.endYear,
-            genres: data.genres,
-            rating: data.rating?.aggregateRating ?? 'N/A',
-            plot: data.plot,
-            thumbnail: data.primaryImage?.url || ''
+            title: data.seasons ? data.name : data.title,
+            original_title: data.seasons
+                ? data.original_name
+                : data.original_title,
+            media_type: data.seasons ? 'tv' : 'movie',
+            original_language: data.original_language,
+            genres: data.genres.map(genre => genre.name),
+            start_date: data.first_air_date || 'N/A',
+            end_date: data.last_air_date || 'N/A',
+            release_date: data.release_date || 'N/A',
+            airing: mediaType == 'tv' && data.in_production,
+            overview: data.overview,
+            seasons: data.seasons?.filter(season => season.season_number != 0) || 'N/A',
+            poster_src: 'https://image.tmdb.org/t/p/w500/' + data.poster_path || 'N/A',
+            rating: data.vote_average ?? 'N/A',
         };
         
         console.log(title);
@@ -45,7 +69,7 @@ const getTitleFromDatabase = async (id, req, res) => {
 /** fetches title information from the IMDB database if it doesn't already exist in the personal watchlist */
 export const fetchTitle = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id, mediaType } = req.params;
         let title;
 
         if (!id) {
@@ -55,7 +79,7 @@ export const fetchTitle = async (req, res) => {
         title = await getTitleFromDatabase(id, req, res);
 
         if (!title) {
-            title = await getTitleFromApi(id, req, res);
+            title = await getTitleFromApi(id, mediaType, req, res);
         }
 
         res.json({ title });

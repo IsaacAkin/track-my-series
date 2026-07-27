@@ -21,7 +21,7 @@ export const router = createBrowserRouter([
         loader: fetchTitlesFromApi
     },
     {
-        path: 'title/:id',
+        path: 'title/:mediaType/:id',
         Component: Title,
     },
     {

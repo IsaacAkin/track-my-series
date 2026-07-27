@@ -1,6 +1,6 @@
-// GET
-export const fetchTitleInformation = async (id) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${id}`);
+// GET gets a single titles information
+export const fetchTitleInformation = async (id, mediaType) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}`);
 
     if (!response.ok) {
         const err = await response.json();
