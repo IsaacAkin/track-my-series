@@ -40,7 +40,8 @@ const getTitleFromApi = async (id, mediaType, req, res) => {
             release_date: data.release_date || 'N/A',
             airing: mediaType == 'tv' && data.in_production,
             overview: data.overview,
-            seasons: data.seasons?.filter(season => season.season_number != 0) || 'N/A',
+            seasons: data.seasons?.filter(season => season.season_number != 0)
+                .map(season => ({ season_number: season.season_number, episode_count: season.episode_count})) || 'N/A',
             poster_src: 'https://image.tmdb.org/t/p/w500/' + data.poster_path || 'N/A',
             rating: data.vote_average ?? 'N/A',
         };
@@ -91,7 +92,7 @@ export const fetchTitle = async (req, res) => {
 
 export async function addTitleToDatabase(req, res) {
     try {
-        const { id } = req.params
+        const { id, mediaType } = req.params
         const { title, type, startYear, endYear, plot, thumbnail, status } = req.body;
 
         if (!id || !title) {
@@ -110,7 +111,7 @@ export async function addTitleToDatabase(req, res) {
 /** updates a titles status to the selected option passed in the req.body */
 export const changeTitleStatus = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id, mediaType } = req.params;
         const { newStatus } = req.body;
         
         await updateTitleStatus(id, newStatus);
@@ -128,7 +129,7 @@ export const changeTitleStatus = async (req, res) => {
 /** updates a titles rating to the selected option passed in the req.body */
 export const changeTitleRating = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id, mediaType } = req.params;
         const { newRating } = req.body;
     
         await updateTitleRating(id, newRating);
@@ -143,7 +144,7 @@ export const changeTitleRating = async (req, res) => {
 
 export const changeEpisodeCount = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id, mediaType } = req.params;
         const { titleType, seasonNumber, episodeCount, maxEpisodes } = req.body;
 
         await updateEpisodeCount(id, titleType, seasonNumber, episodeCount, maxEpisodes);
@@ -161,7 +162,7 @@ export const changeEpisodeCount = async (req, res) => {
 /** recieves titleId from the req.params and removes it from the collection */
 export const deleteSingleTitle = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id, mediaType } = req.params;
     
         await deleteTitle(id);
 
