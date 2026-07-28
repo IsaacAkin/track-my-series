@@ -5,12 +5,12 @@ const router = express.Router();
 
 router.get('/:mediaType/:id', fetchTitle);
 
-router.post('/:id', addTitleToDatabase);
+router.post('/:mediaType/:id', addTitleToDatabase);
 
-router.patch('/rating/:id', changeTitleRating);
-router.patch('/status/:id', changeTitleStatus);
-router.patch('/episodecount/:id', changeEpisodeCount);
+router.patch('/:mediaType/:id/rating', changeTitleRating);
+router.patch('/:mediaType/:id/status', changeTitleStatus);
+router.patch('/:mediaType/:id/episodecount', changeEpisodeCount);
 
-router.delete('/:id', deleteSingleTitle);
+router.delete('/:mediaType/:id', deleteSingleTitle);
 
 export default router;
