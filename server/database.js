@@ -31,36 +31,69 @@ const connectToDatabase = async () => {
     }
 }
 
-/** adds a new series/movie document into the titles collection */
-export const addToCollection = async (id, title, type, startYear, endYear, plot, thumbnail, status) => {
+/** adds a new tv series to the database */
+const addTvSeries = async (id, title, originalTitle, mediaType, startDate, endDate, originalLanguage, genres, airing, overview, watchStatus, seasons, posterSrc) => {
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
         const query = { 
-            _id: id, 
+            _id: Number(id), 
             title: title, 
-            type: type, 
-            startYear: startYear, 
-            endYear: endYear, 
-            plot: plot, 
-            thumbnail: thumbnail, 
-            status: status,
-            seasons: type != 'movie' 
-            ? [
-                {"season": 1, "total_episodes": 1, "watched_episodes": 0}
-            ] 
-            : [
-                {"total_episodes": 1, "watched_episodes": 0}
-            ]
-        };
+            original_title: originalTitle,
+            media_type: mediaType, 
+            start_date: startDate.split('-').reverse().join('-'), 
+            end_date: endDate.split('-').reverse().join('-'), 
+            original_language: originalLanguage,
+            genres: genres,
+            airing: airing,
+            overview: overview, 
+            watch_status: watchStatus,
+            seasons: seasons,
+            poster_src: posterSrc
+        }
 
         const result = await collection.insertOne(query);
-        console.log(`'${title}' has been added to the '${titlesCollection}' collection with the _id: ${result.insertedId} and status of '${status}'.`);
+        console.log(`'${title}' has been added to the '${titlesCollection}' collection with the _id: ${result.insertedId} and status of '${watchStatus}'.`);
     } catch (error) {
-        console.error('Error adding series to the collection:', error);
+        console.error('Error adding tv series to the collection:', error);
     } finally {
         await client.close();
     }
+}
+
+/** adds a new movie to the database */
+const addMovie = async (id, title, originalTitle, mediaType, releaseDate, originalLanguage, genres, overview, watchStatus, posterSrc) => {
+    try {
+        await connectToDatabase();
+        const collection = client.db(trackMySeriesDB).collection(titlesCollection);
+        const query = { 
+            _id: Number(id), 
+            title: title, 
+            original_title: originalTitle,
+            media_type: mediaType, 
+            release_date: releaseDate.split('-').reverse().join('-'),
+            original_language: originalLanguage,
+            genres: genres,
+            overview: overview, 
+            watch_status: watchStatus,
+            watched: watchStatus == 'completed' ? true : false,
+            poster_src: posterSrc
+        }
+
+        const result = await collection.insertOne(query);
+        console.log(`'${title}' has been added to the '${titlesCollection}' collection with the _id: ${result.insertedId} and status of '${watchStatus}'.`);
+    } catch (error) {
+        console.error('Error adding movie to the collection:', error);
+    } finally {
+        await client.close();
+    }
+}
+
+/** adds a new tv series or movie document into the titles collection depending on the media type */
+export const addToCollection = async (id, title, originalTitle, mediaType, startYear, endYear, releaseDate, originalLanguage, genres, airing, overview, watchStatus, seasons, posterSrc) => {
+    mediaType == 'tv'
+    ? addTvSeries(id, title, originalTitle, mediaType, startYear, endYear, originalLanguage, genres, airing, overview, watchStatus, seasons, posterSrc)
+    : addMovie(id, title, originalTitle, mediaType, releaseDate, originalLanguage, genres, overview, watchStatus, posterSrc);
 }
 
 /** finds title information by ID and updates the watch status */
@@ -73,12 +106,12 @@ export const updateTitleStatus = async (titleId, newStatus) => {
         if (documentToChange === undefined) {
             throw new Error(`Could not find _id in the ${titlesCollection} collection.`);
         }
-        const oldStatus = documentToChange.status;
+        const oldStatus = documentToChange.watch_status;
         
         const filter = { _id: titleId };
         const updateDoc = {
             $set: {
-                status: newStatus
+                watch_status: newStatus
             }
         };
     
@@ -143,27 +176,27 @@ export const updateEpisodeCount = async (titleId, titleType, seasonNumber, episo
         if (titleType != 'movie') {
             filter = { 
                 _id: titleId,
-                "seasons.season": Number(seasonNumber)
+                "seasons.season_number": Number(seasonNumber)
             };
             updateDoc = {
                 $set: {
-                    "seasons.$.watched_episodes": Number(episodeCount)
+                    "seasons.$.watched_count": Number(episodeCount)
                 }
             };    
         } else {
             filter = { 
                 _id: titleId,
-                "seasons.total_episodes": 1
+                "seasons.episode_count": 1
              };
             updateDoc = {
                 $set: {
-                    "seasons.$.watched_episodes": Number(episodeCount)
+                    "seasons.$.watched_count": Number(episodeCount)
                 }
             };
         }
     
         const result = await collection.updateOne(filter, updateDoc);
-        if (result.matchedCount === 0) { console.log(`Season not found in '${documentToChange.title}'`); }
+        if (result.matchedCount === 0) { console.log(`Season ${seasonNumber} not found in '${documentToChange.title}'`); }
         result.modifiedCount > 0 ? console.log(`Updated ${result.modifiedCount} document.`) : console.log(`${result.modifiedCount} documents updated.`);
         console.log(`Updated the watched episodes of '${documentToChange.title}' to '${episodeCount}'.`);
     } catch (error) {
@@ -174,24 +207,24 @@ export const updateEpisodeCount = async (titleId, titleType, seasonNumber, episo
 }
 
 /** returns a populated array of all series with the specified status from the titles collection */
-export const getTitlesWithStatus = async (status) => {
+export const getTitlesWithStatus = async (watchStatus) => {
     const titles = [];
 
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
-        const query = collection.find({ status: status }).sort({ title: 1 }); // sorts results in alphabetical order
+        const query = collection.find({ watch_status: watchStatus }).sort({ title: 1 }); // sorts results in alphabetical order
 
         for await (const title of query) {
             titles.push(title);
         }
 
         if (titles.length === 0) {
-            console.log(`No titles found with the status of '${status}'.`);
+            console.log(`No titles found with the status of '${watchStatus}'.`);
             return titles;
         }
         
-        console.log(`${titles.length} titles found with the status of '${status}'.`);
+        console.log(`${titles.length} titles found with the status of '${watchStatus}'.`);
         return titles;
     } catch (error) {
         console.error(error);
@@ -233,7 +266,8 @@ export const getTitle = async (titleId) => {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
         
-        const query = { _id: titleId }
+        const query = { _id: Number(titleId) }
+        // const query = { _id: titleId }
         const title = await collection.findOne(query);
 
         if (!title) {
