@@ -16,15 +16,15 @@ export const fetchAllWatchlistTitles = async (req, res) => {
 /** gets all titles with the specified status and renders them on the specified page */
 export const fetchWatchlistTitles = async (req, res) => {
     try {
-        const { status } = req.params;
+        const { watchStatus } = req.params;
     
-        if (!verifyStatus(status)) {
+        if (!verifyStatus(watchStatus)) {
             return res.status(404).json({
-                message: `${status} not found`
+                message: `${watchStatus} not found`
             });
         };
     
-        const titles = await getTitlesWithStatus(status);
+        const titles = await getTitlesWithStatus(watchStatus);
         
         res.json({ titles });
         

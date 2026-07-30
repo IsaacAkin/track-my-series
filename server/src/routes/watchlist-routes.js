@@ -4,6 +4,6 @@ import { fetchWatchlistTitles, fetchAllWatchlistTitles } from "../controllers/wa
 const router = express.Router();
 
 router.get('/', fetchAllWatchlistTitles);
-router.get('/:status', fetchWatchlistTitles);
+router.get('/:watchStatus', fetchWatchlistTitles);
 
 export default router;
