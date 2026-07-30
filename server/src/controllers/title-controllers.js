@@ -92,16 +92,16 @@ export const fetchTitle = async (req, res) => {
 
 export async function addTitleToDatabase(req, res) {
     try {
-        const { id, mediaType } = req.params
-        const { title, type, startYear, endYear, plot, thumbnail, status } = req.body;
+        const { id, mediaType } = req.params;
+        const { title, original_title, start_date, end_date, release_date, original_language, genres, airing, overview, watchStatus, seasons, poster_src } = req.body;
 
-        if (!id || !title) {
-            return res.status(400).json({ message: 'ID and title are required.' });
+        if (!id || !mediaType || !title) {
+            return res.status(400).json({ message: 'ID, media type and title are required.' });
         }
     
-        await addToCollection(id, title, type, startYear, endYear, plot, thumbnail, status);
+        await addToCollection(id, title, original_title, mediaType, start_date, end_date, release_date, original_language, genres, airing, overview, watchStatus, seasons, poster_src);
 
-        res.status(201).json({ message: `'${title}' has been added to the collection and set to '${status}'.` });
+        res.status(201).json({ message: `'${title}' has been added to the collection and set to '${watchStatus}'.` });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to add title to the database.' });
