@@ -267,7 +267,6 @@ export const getTitle = async (titleId) => {
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
         
         const query = { _id: Number(titleId) }
-        // const query = { _id: titleId }
         const title = await collection.findOne(query);
 
         if (!title) {
