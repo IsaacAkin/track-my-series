@@ -3,7 +3,7 @@ import Navbar from "../../components/Navbar.jsx";
 import WatchlistNavbar from '../../components/WatchlistNavbar.jsx'
 import '../../styles/watchlist.css';
 
-export default function Watching() {
+export default function Watchlist() {
     return(
         <div className="app">
             <Navbar />
