@@ -6,9 +6,9 @@ const trackMySeriesDB = process.env.DATABASE;
 const titlesCollection = process.env.COLLECTION;
 
 export const listOfStatuses = [
-    { value: 'plan-to-watch', label: 'Plan To Watch'},
+    { value: 'planning', label: 'Planning'},
     { value: 'watching', label: 'Watching'},
-    { value: 'on-hold', label: 'On Hold'},
+    { value: 'paused', label: 'Paused'},
     { value: 'completed', label: 'Completed'}
 ];
 

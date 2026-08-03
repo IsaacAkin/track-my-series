@@ -39,9 +39,9 @@ export const fetchWatchlistTitles = async (req, res) => {
 /** checks to see if the specified collection is a valid collection */
 const verifyStatus = (status) => {
     const views = [
-        'plan-to-watch',
+        'planning',
         'watching',
-        'on-hold',
+        'paused',
         'completed'
     ];
 
