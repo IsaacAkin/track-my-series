@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import Home from './pages/Home.jsx';
 import Search from './pages/Search.jsx';
-import { fetchTitlesFromApi } from './services/api.js'
+import { fetchTitlesFromApi, fetchTitlesFromDatabase } from './services/api.js'
 import Title from './pages/Title.jsx';
 import Watchlist from './pages/watchlist/Watchlist.jsx';
 import AllTitles from './pages/watchlist/AllTitles.jsx';
@@ -28,11 +28,11 @@ export const router = createBrowserRouter([
         path: 'watchlist',
         Component: Watchlist,
         children: [
-            { index: true, Component: AllTitles },
-            { path: 'watching', Component: Watching },
-            { path: 'paused', Component: Paused },
-            { path: 'completed', Component: Completed },
-            { path: 'planning', Component: Planning }
+            { index: true, Component: AllTitles, loader: fetchTitlesFromDatabase },
+            { path: 'watching', Component: Watching, loader: fetchTitlesFromDatabase },
+            { path: 'paused', Component: Paused, loader: fetchTitlesFromDatabase },
+            { path: 'completed', Component: Completed, loader: fetchTitlesFromDatabase },
+            { path: 'planning', Component: Planning, loader: fetchTitlesFromDatabase }
         ]
     }
 ])

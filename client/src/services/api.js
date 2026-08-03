@@ -1,4 +1,4 @@
-// GET gets a single titles information
+// GET gets a single titles information from either the API or database
 export const fetchTitleInformation = async (id, mediaType) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}`);
 
@@ -27,18 +27,21 @@ export async function fetchTitlesFromApi({ request }) {
     return response.json();
 }
 
-// GET
-export const fetchTitlesFromDatabase = async (watchStatus) => {
+// GET gets a list of titles from the database depending on the watch_status
+export const fetchTitlesFromDatabase = async ({ request }) => {
+    const url = new URL(request.url);
+    const watchStatus = url.pathname.split('/').at(-1);
     let response;
 
-    if (!watchStatus) {
+    // if (watchStatus != 'watchlist' && !watchStatus) return { results: [] };
+
+    if (watchStatus == 'watchlist') {
         response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist`);
     } else {
         response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist/${watchStatus}`);
     }
 
     if (!response) {
-        // throw new Error(`Error ${response.status}`);
         const err = await response.json();
         throw new Error(err.message);
     }
@@ -53,7 +56,7 @@ export const addToDatabase = async (title, watchStatus) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             ...title, 
-            status: watchStatus
+            watchStatus
         })
     });
 
