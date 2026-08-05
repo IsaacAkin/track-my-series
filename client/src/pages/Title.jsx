@@ -1,7 +1,5 @@
 import Navbar from "../components/Navbar.jsx";
-import { useParams } from "react-router";
-import { useState, useEffect } from "react";
-import { fetchTitleInformation } from "../services/api.js";
+import { useLoaderData } from "react-router";
 import { AddTitleBtn, UpdateStatusBtn, DeleteTitleBtn, SetTitleRating } from "../components/TitleButtons.jsx";
 
 function ApiTitle({ title }) {
@@ -37,22 +35,26 @@ function DatabaseTitle({ title }) {
         <div className="container">
             <div className="title-information">
                 <div className="thumbnail-container">
-                    <img src={title.thumbnail} alt={title.name} className="full-thumbnail" />
+                    <img src={title.poster_src} alt={title.title} className="full-thumbnail" />
                 </div>
                 <div className="example">
                     <div className="context">
                         <p className="primary-title">{title.title}</p>
-                        {title.type === 'tvSeries' && <p className="type">TV Series</p>}
-                        {title.type === 'tvMiniSeries' && <p className="type">TV Mini Series</p>}
-                        {title.type === 'movie' && <p className="type">Movie</p>}
-                        <p className="plot">{title.plot}</p>
+                        {title.media_type === 'tv' && <p className="type">TV Series</p>}
+                        {title.media_type === 'movie' && <p className="type">Movie</p>}
+                        <p className="plot">{title.overview}</p>
                     </div>
                     <div className="status-buttons">
                         <p>Rating: {title.rating}</p>
                         <div className="episode-handler">
-                            <span id="total_episodes">{title.seasons[0].total_episodes}</span>
-                            <span>/</span>
-                            <span id="watched_episodes">{title.seasons[0].watched_episodes}</span>
+                            {
+                                title.media_type == 'tv' &&
+                                <>
+                                    <span id="total_episodes">{title.seasons[0].episode_count}</span>
+                                    <span>/</span>
+                                    <span id="watched_episodes">{title.seasons[0].watched_count}</span>
+                                </>
+                            }
                         </div>
                         <UpdateStatusBtn title={title} />
                         <SetTitleRating title={title} />
@@ -65,32 +67,12 @@ function DatabaseTitle({ title }) {
 }
 
 export default function Title() {
-    const { id, mediaType } = useParams();
-    const [title, setTitle] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function getTitle() {
-            try {
-                const data = await fetchTitleInformation(id, mediaType);
-                setTitle(data.title);   
-            } catch (error) {
-                setError(error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        getTitle();
-    }, [id, mediaType])
+    const { title } = useLoaderData()
 
     return(
         <div className="app">
             <Navbar />
             <>
-                {error && <p style={{ textAlign: 'center', color: 'white'}}>Error loading content</p>}
-                {loading && <p style={{ textAlign: 'center', color: 'white'}}>Loading...</p>}
                 {title && title.id && <ApiTitle title={title} /> }
                 {title && title._id && <DatabaseTitle title={title} /> }
             </>

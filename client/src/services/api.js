@@ -1,5 +1,9 @@
 // GET gets a single titles information from either the API or database
-export const fetchTitleInformation = async (id, mediaType) => {
+export const fetchTitleInformation = async ({ request }) => {
+    const url = new URL(request.url);
+    const id = url.pathname.split('/').at(-1);
+    const mediaType = url.pathname.split('/').at(-2);
+
     const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}`);
 
     if (!response.ok) {
