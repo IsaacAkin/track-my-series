@@ -231,14 +231,14 @@ export function MovieEpisodeHandler({ title, watchedCount, updateWatchedCount })
 export const UpdateStatusBtn = ({ title }) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState(title.status);
+    const [status, setStatus] = useState(title.watch_status);
 
     const changeStatus = async (e) => {
         const selectedStatus = e.target.value;
         setLoading(true);
         
         try {
-            const response = await updateTitleWatchStatus(title._id, selectedStatus);
+            const response = await updateTitleWatchStatus(title._id, title.media_type, selectedStatus);
 
             if (!response.ok) {
                 console.log(response.message);
@@ -264,9 +264,9 @@ export const UpdateStatusBtn = ({ title }) => {
                 </>
                 :
                     <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={status} onChange={changeStatus}>
-                        <option value="plan-to-watch">Planning</option>
+                        <option value="planning">Planning</option>
                         <option value="completed">Completed</option>
-                        <option value="on-hold">Paused</option>
+                        <option value="paused">Paused</option>
                         <option value="watching">Watching</option>
                     </select>
             }

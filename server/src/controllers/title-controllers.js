@@ -114,7 +114,7 @@ export const changeTitleStatus = async (req, res) => {
         const { id, mediaType } = req.params;
         const { newStatus } = req.body;
         
-        await updateTitleStatus(id, newStatus);
+        await updateTitleStatus(id, mediaType, newStatus);
 
         res.status(200).json({ message: `Successfully updated title status to '${newStatus}'.` });
 

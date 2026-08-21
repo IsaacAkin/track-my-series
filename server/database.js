@@ -97,18 +97,18 @@ export const addToCollection = async (id, title, originalTitle, mediaType, start
 }
 
 /** finds title information by ID and updates the watch status */
-export const updateTitleStatus = async (titleId, newStatus) => {
+export const updateTitleStatus = async (titleId, mediaType, newStatus) => {
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
     
-        const documentToChange = await collection.findOne({ _id: titleId });
-        if (documentToChange === undefined) {
+        const documentToChange = await collection.findOne({ media_type: mediaType, _id: Number(titleId) });
+        if (documentToChange === null) {
             throw new Error(`Could not find _id in the ${titlesCollection} collection.`);
         }
         const oldStatus = documentToChange.watch_status;
         
-        const filter = { _id: titleId };
+        const filter = { media_type: mediaType, _id: Number(titleId) };
         const updateDoc = {
             $set: {
                 watch_status: newStatus
