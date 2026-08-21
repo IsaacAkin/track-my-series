@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addToDatabase, removeTitleFromDatabase, updateTitleWatchStatus, updateTitleRating, updateTitleEpisodeCount } from "../services/api.js";
+import { addToDatabase, removeTitleFromDatabase, updateTitleWatchStatus, updateTitleRating, updateTvWatchedCount, updateMovieWatchedCount } from "../services/api.js";
 
 export const AddTitleBtn = ({ title }) => {
     const [error, setError] = useState(null);
@@ -43,53 +43,53 @@ export const AddTitleBtn = ({ title }) => {
 
 export function SeasonsDropdown({ title }) {
     const seasons = title.seasons;
-    const [currentSeason, setCurrentSeason] = useState(seasons[0].season);
-    const [totalEpisodes, setTotalEpisodes] = useState(title.seasons[0].total_episodes);
-    const [watchedEpisodes, setWatchedEpisodes] = useState(title.seasons[0].watched_episodes);
+    const [currentSeason, setCurrentSeason] = useState(title.media_type == 'tv' && seasons[0].season_number);
+    const [episodeCount, setEpisodeCount] = useState(title.media_type == 'tv' ? title.seasons[0].episode_count : 1);
+    const [watchedCount, setWatchedCount] = useState(title.media_type == 'tv' ? title.seasons[0].watched_count : title.watched == false ? 0 : 1);
 
     const fetchSeasonInformation = (e) => {
-        const foundSeason = seasons.find(season => season.season == Number(e.target.value));
+        const foundSeason = seasons.find(season => season.season_number == Number(e.target.value));
         setCurrentSeason(foundSeason);
-        setTotalEpisodes(foundSeason.total_episodes);
-        setWatchedEpisodes(foundSeason.watched_episodes);
+        setEpisodeCount(foundSeason.episode_count);
+        setWatchedCount(foundSeason.watched_count);
     }
 
     return (
         <>
             {
-                seasons && title.type !== 'movie'
+                seasons && title.media_type == 'tv'
                 ?
                 <>
                     <select name="seasons-dropdown" id="seasons-dropdown" defaultValue={currentSeason} onChange={fetchSeasonInformation}>
                         {
                             seasons.map(season => (
-                                <option key={season.season} value={season.season}>Season {season.season}</option>
+                                <option key={season.season_number} value={season.season_number}>Season {season.season_number}</option>
                             ))
                         }
                     </select>
-                    <ButtonHandler title={title} currentSeason={currentSeason} totalEpisodes={totalEpisodes} watchedEpisodes={watchedEpisodes} updateWatched={setWatchedEpisodes} />
+                    <TvEpisodeHandler title={title} currentSeason={currentSeason} episodeCount={episodeCount} watchedCount={watchedCount} updateWatchedCount={setWatchedCount} />
                 </>
-                : <p>Watched</p>
+                : <MovieEpisodeHandler title={title} watchedCount={watchedCount} updateWatchedCount={setWatchedCount} />
             }
         </>
     )
 }
 
-function ButtonHandler({ title, currentSeason, totalEpisodes, watchedEpisodes, updateWatched, onBlur }) {
+function TvEpisodeHandler({ title, currentSeason, episodeCount, watchedCount, updateWatchedCount, onBlur }) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const incrementCount = async () => {
-        if (watchedEpisodes + 1 > totalEpisodes) {
+        if (watchedCount + 1 > episodeCount) {
             return;
         }
-        updateWatched(watchedEpisodes++);
+        updateWatchedCount(watchedCount++);
         setLoading(true);
         
         try {
-            const response = await updateTitleEpisodeCount(title._id, title.type, currentSeason.season, watchedEpisodes, totalEpisodes);
+            const response = await updateTvWatchedCount(title._id, title.media_type, currentSeason.season_number, watchedCount, episodeCount);
             if (!response.ok) {
-                updateWatched(watchedEpisodes--);
+                updateWatchedCount(watchedCount--);
             }
             console.log(response.message);
         } catch (error) {
@@ -100,16 +100,16 @@ function ButtonHandler({ title, currentSeason, totalEpisodes, watchedEpisodes, u
     }
     
     const decrementCount = async () => {
-        if (watchedEpisodes - 1 < 0) {
+        if (watchedCount - 1 < 0) {
             return;
         }
-        updateWatched(watchedEpisodes--);
+        updateWatchedCount(watchedCount--);
         setLoading(true);
         
         try {
-            const response = await updateTitleEpisodeCount(title._id, title.type, currentSeason.season, watchedEpisodes, totalEpisodes);
+            const response = await updateTvWatchedCount(title._id, title.media_type, currentSeason.season_number, watchedCount, episodeCount);
             if (!response.ok) {
-                updateWatched(watchedEpisodes--);
+                updateWatchedCount(watchedCount--);
             }
             console.log(response.message);
         } catch (error) {
@@ -122,18 +122,94 @@ function ButtonHandler({ title, currentSeason, totalEpisodes, watchedEpisodes, u
     return (
         <div className="episodeHandler">
             <input type="number"
-            name="total_episodes" 
-            id="total_episodes"
-            value={totalEpisodes}
+            name="watched_count" 
+            id="watched_count"
+            value={watchedCount}
             onChange={onBlur}
-            disabled
             />
             /
             <input type="number"
-            name="watched_episodes" 
-            id="watched_episodes"
-            value={watchedEpisodes}
+            name="episode_count" 
+            id="episode_count"
+            value={episodeCount}
             onChange={onBlur}
+            disabled
+            />
+            { error && <p>Error updating episode count</p> }
+            {
+                loading
+                ? 
+                <>
+                    <p>Updating episode count...</p>
+                </>
+                :
+                <>
+                    <button type="button" className="decrement-btn" onClick={decrementCount}>-</button>
+                    <button type="button" className="increment-btn" onClick={incrementCount}>+</button>
+                </>
+            }
+        </div>
+    )
+}
+
+export function MovieEpisodeHandler({ title, watchedCount, updateWatchedCount }) {
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const incrementCount = async () => {
+        if (watchedCount + 1 > 1) {
+            return;
+        }
+
+        updateWatchedCount(watchedCount++)
+        setLoading(true);
+        
+        try {
+            const response = await updateMovieWatchedCount(title._id, title.media_type, watchedCount);
+            if (!response.ok) {
+                updateWatchedCount(watchedCount--)
+            }
+            console.log(response.message);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    const decrementCount = async () => {
+        if (watchedCount - 1 < 0) {
+            return;
+        }
+        updateWatchedCount(watchedCount--)
+        setLoading(true);
+        
+        try {
+            const response = await updateMovieWatchedCount(title._id, title.media_type, watchedCount);
+            if (!response.ok) {
+                updateWatchedCount(watchedCount++)
+            }
+            console.log(response.message);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div className="episodeHandler">
+            <input type="number"
+            name="watched_count" 
+            id="watched_count"
+            value={watchedCount}
+            />
+            /
+            <input type="number"
+            name="episode_count" 
+            id="episode_count"
+            value={1}
+            disabled
             />
             { error && <p>Error updating episode count</p> }
             {

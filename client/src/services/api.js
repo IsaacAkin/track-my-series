@@ -53,7 +53,7 @@ export const fetchTitlesFromDatabase = async ({ request }) => {
     return response.json();
 }
 
-// POST
+// POST adds title information to the database
 export const addToDatabase = async (title, watchStatus) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${title.media_type}/${title.id}`, {
         method: 'POST',
@@ -104,16 +104,33 @@ export const updateTitleWatchStatus = async (id, mediaType, newStatus) => {
     return response.json();
 }
 
-// PATCH
-export const updateTitleEpisodeCount = async (id, mediaType, titleType, seasonNumber, episodeCount, maxEpisodes) => {
+// PATCH updates a tv series watched count
+export const updateTvWatchedCount = async (id, mediaType, seasonNumber, watchedCount, episodeCount) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/episodecount`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            titleType,
             seasonNumber,
-            episodeCount,
-            maxEpisodes
+            watchedCount,
+            episodeCount
+        })
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+    }
+
+    return response.json();
+}
+
+// PATCH updates a movies watched count
+export const updateMovieWatchedCount = async (id, mediaType, watchedCount) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/episodecount`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            watchedCount
         })
     });
 

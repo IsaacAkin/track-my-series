@@ -1,4 +1,4 @@
-import { getTitle, addToCollection, updateTitleStatus, deleteTitle, updateTitleRating, updateEpisodeCount, listOfStatuses, listOfRatings } from "../../database.js";
+import { getTitle, addToCollection, updateTitleStatus, deleteTitle, updateTitleRating, updateTvWatchedCount, updateMovieWatchedCount } from "../../database.js";
 
 const getTitleFromApi = async (id, mediaType, req, res) => {
     try {
@@ -142,12 +142,17 @@ export const changeTitleRating = async (req, res) => {
     }
 }
 
-export const changeEpisodeCount = async (req, res) => {
+/** updates a titles watched count for the selectedSeason or a movies watched count */
+export const changeWatchedCount = async (req, res) => {
     try {
         const { id, mediaType } = req.params;
-        const { titleType, seasonNumber, episodeCount, maxEpisodes } = req.body;
+        const { seasonNumber, watchedCount, episodeCount } = req.body;
 
-        await updateEpisodeCount(id, titleType, seasonNumber, episodeCount, maxEpisodes);
+        if (mediaType == 'tv') {
+            await updateTvWatchedCount(id, seasonNumber, watchedCount, episodeCount);
+        } else {
+            await updateMovieWatchedCount(id, watchedCount);
+        }
 
         res.status(200).json({ 
             message: 'Successfully updated watched episode count.'

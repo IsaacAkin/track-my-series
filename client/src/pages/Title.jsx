@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar.jsx";
 import { useLoaderData } from "react-router";
-import { AddTitleBtn, UpdateStatusBtn, DeleteTitleBtn, SetTitleRating } from "../components/TitleButtons.jsx";
+import { AddTitleBtn, UpdateStatusBtn, DeleteTitleBtn, SetTitleRating, SeasonsDropdown } from "../components/TitleButtons.jsx";
 
 function ApiTitle({ title }) {
     return (
@@ -46,18 +46,9 @@ function DatabaseTitle({ title }) {
                     </div>
                     <div className="status-buttons">
                         <p>Rating: {title.rating}</p>
-                        <div className="episode-handler">
-                            {
-                                title.media_type == 'tv' &&
-                                <>
-                                    <span id="total_episodes">{title.seasons[0].episode_count}</span>
-                                    <span>/</span>
-                                    <span id="watched_episodes">{title.seasons[0].watched_count}</span>
-                                </>
-                            }
-                        </div>
                         <UpdateStatusBtn title={title} />
                         <SetTitleRating title={title} />
+                        <SeasonsDropdown title={title} />
                         <DeleteTitleBtn id={title._id} />
                     </div>
                 </div>

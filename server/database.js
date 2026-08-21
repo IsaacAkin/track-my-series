@@ -154,51 +154,75 @@ export const updateTitleRating = async (titleId, newRating) => {
     }
 }
 
-export const updateEpisodeCount = async (titleId, titleType, seasonNumber, episodeCount, totalEpisodes) => {
+export const updateTvWatchedCount = async (titleId, seasonNumber, watchedCount, episodeCount) => {
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
         
-        const documentToChange = await collection.findOne({ _id: titleId });
-        if (documentToChange === undefined) {
+        const documentToChange = await collection.findOne({ media_type: 'tv', _id: Number(titleId) });
+        if (documentToChange === null) {
             throw new Error(`Could not find _id in the ${titlesCollection} collection.`);
         }
 
-        if (episodeCount > totalEpisodes) {
+        if (watchedCount > episodeCount) {
             throw new Error("Episode count can not exceed the total amount of episodes.");
-        } else if (episodeCount < 0) {
+        } else if (watchedCount < 0) {
             throw new Error("Episode count cannot be less than 0");
         }
 
-        let filter = {};
-        let updateDoc = {};
-        
-        if (titleType != 'movie') {
-            filter = { 
-                _id: titleId,
-                "seasons.season_number": Number(seasonNumber)
-            };
-            updateDoc = {
-                $set: {
-                    "seasons.$.watched_count": Number(episodeCount)
-                }
-            };    
-        } else {
-            filter = { 
-                _id: titleId,
-                "seasons.episode_count": 1
-             };
-            updateDoc = {
-                $set: {
-                    "seasons.$.watched_count": Number(episodeCount)
-                }
-            };
+        const filter = {
+            media_type: 'tv',
+            _id: Number(titleId),
+            'seasons.season_number': Number(seasonNumber)
+        };
+        const updateDoc = {
+            $set: {
+                'seasons.$.watched_count': Number(watchedCount)
+            }
         }
     
         const result = await collection.updateOne(filter, updateDoc);
-        if (result.matchedCount === 0) { console.log(`Season ${seasonNumber} not found in '${documentToChange.title}'`); }
+        if (result.matchedCount === 0) console.log(`Season ${seasonNumber} not found in '${documentToChange.title}'`);
         result.modifiedCount > 0 ? console.log(`Updated ${result.modifiedCount} document.`) : console.log(`${result.modifiedCount} documents updated.`);
-        console.log(`Updated the watched episodes of '${documentToChange.title}' to '${episodeCount}'.`);
+        console.log(`Updated the watched episodes of '${documentToChange.title}' to '${watchedCount}'.`);
+    } catch (error) {
+        console.error(error);
+    } finally{
+        client.close();
+    }
+}
+
+export const updateMovieWatchedCount = async (titleId, watchedCount) => {
+    try {
+        await connectToDatabase();
+        const collection = client.db(trackMySeriesDB).collection(titlesCollection);
+        
+        const documentToChange = await collection.findOne({ media_type: 'movie', _id: Number(titleId) });
+        if (documentToChange === null) {
+            throw new Error(`Could not find an _id with that value in the '${titlesCollection}' collection.`);
+        }
+
+        if (watchedCount > 1) {
+            throw new Error("Movie watched count can not exceed 1.");
+        } else if (watchedCount < 0) {
+            throw new Error("Movie watched count cannot be less than 0");
+        }
+
+        const filter = {
+            media_type: 'movie',
+            _id: Number(titleId),
+        };
+
+        const updateDoc = {
+            $set: {
+                watched: Number(watchedCount) === 1 ? true : false
+            }
+        };
+    
+        const result = await collection.updateOne(filter, updateDoc);
+        if (result.matchedCount === 0) { console.log(`Failed to update movie watched count`); }
+        result.modifiedCount > 0 ? console.log(`Updated ${result.modifiedCount} document.`) : console.log(`${result.modifiedCount} document updated.`);
+        console.log(`Updated the watched count of '${documentToChange.title}' to '${watchedCount}'.`);
     } catch (error) {
         console.error(error);
     } finally{
