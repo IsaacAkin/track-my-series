@@ -308,13 +308,17 @@ export const getTitle = async (titleId) => {
 }
 
 /** deletes a title from the database via the _id provided */
-export const deleteTitle = async (titleId) => {
+export const deleteTitle = async (titleId, mediaType) => {
     try {
         await connectToDatabase();
         const collection = client.db(trackMySeriesDB).collection(titlesCollection);
 
-        const query = { _id: titleId };
+        const query = { media_type: mediaType, _id: Number(titleId) };
         const titleToDelete = await collection.deleteOne(query);
+
+        if (titleToDelete === undefined || titleToDelete === null) {
+            throw new Error(`Could not find _id in the ${titlesCollection} collection.`);
+        }
 
         titleToDelete.deletedCount === 1 
         ? console.log('Successfully deleted 1 document from the collection')

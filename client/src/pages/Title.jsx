@@ -49,7 +49,7 @@ function DatabaseTitle({ title }) {
                         <UpdateStatusBtn title={title} />
                         <SetTitleRating title={title} />
                         <SeasonsDropdown title={title} />
-                        <DeleteTitleBtn id={title._id} />
+                        <DeleteTitleBtn title={title} />
                     </div>
                 </div>
             </div>

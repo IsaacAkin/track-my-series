@@ -322,7 +322,7 @@ export const SetTitleRating = ({ title }) => {
     )
 }
 
-export const DeleteTitleBtn = ({ id }) => {
+export const DeleteTitleBtn = ({ title }) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -330,7 +330,12 @@ export const DeleteTitleBtn = ({ id }) => {
         setLoading(true);
         
         try {
-            const response = await removeTitleFromDatabase(id);
+            const response = await removeTitleFromDatabase(title._id, title.media_type);
+
+            if (!response.ok) {
+                console.log(response.message);
+            }
+
             console.log(response.message);
         } catch (error) {
             setError(error);

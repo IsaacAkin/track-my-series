@@ -169,7 +169,7 @@ export const deleteSingleTitle = async (req, res) => {
     try {
         const { id, mediaType } = req.params;
     
-        await deleteTitle(id);
+        await deleteTitle(id, mediaType);
 
         res.status(200).json({ message: 'Successfully deleted title.' });
 
