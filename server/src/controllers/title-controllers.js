@@ -132,7 +132,7 @@ export const changeTitleRating = async (req, res) => {
         const { id, mediaType } = req.params;
         const { newRating } = req.body;
     
-        await updateTitleRating(id, newRating);
+        await updateTitleRating(id, mediaType, newRating);
 
         res.status(200).json({ message: 'Successfully updated title rating.' });
 

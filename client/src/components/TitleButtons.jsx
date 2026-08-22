@@ -277,14 +277,21 @@ export const UpdateStatusBtn = ({ title }) => {
 export const SetTitleRating = ({ title }) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [rating, setRating] = useState(title.rating ? title.rating : '0')
 
     const changeRating = async (e) => {
         const selectedRating = e.target.value;
         setLoading(true);
         
         try {
-            const response = await updateTitleRating(title._id, selectedRating);
+            const response = await updateTitleRating(title._id, title.media_type, selectedRating);
+
+            if (!response.ok) {
+                console.log(response.message);
+            }
+
             console.log(response.message);
+            setRating(selectedRating);
         } catch (error) {
             setError(error);
         } finally {
@@ -302,7 +309,7 @@ export const SetTitleRating = ({ title }) => {
                     <p>Updating rating...</p>
                 </>
                 :
-                    <select name="rating-dropdown" id="rating-dropdown" defaultValue={title.rating ? title.rating : '0'} onChange={changeRating}>
+                    <select name="rating-dropdown" id="rating-dropdown" defaultValue={rating} onChange={changeRating}>
                         <option value="0">No Rating</option>
                         <option value="1">1⭐</option>
                         <option value="2">2⭐</option>
