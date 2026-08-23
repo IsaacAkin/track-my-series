@@ -18,6 +18,7 @@ if (isProd) {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 app.use(cors());
 app.use(express.json()); // to parse JSON data into req.body
 
@@ -27,24 +28,22 @@ app.use('/api/title', titleRouter);
 app.use('/api/watchlist', watchlistRouter);
 
 const clientPath = path.join(__dirname, '../client/dist');
-isProd && app.use(express.static(clientPath));
 
-app.get('/{*splat}', (req, res) => {
-    if (isProd) {
+if (isProd) {
+    app.use(express.static(clientPath));
+    
+    app.get('/{*splat}', (req, res) => {
         res.sendFile(path.join(clientPath, 'index.html'));
-    } else {
-        res.status(404).send('Page not found.');    
-    }
-});
+    });
+} else {
+    res.status(404).send('Page not found.'); // global handler when an invalid route is trying to be accessed
+}
 
-// app.use((req, res) => {
-//     res.status(404).send('Page not found.');
-// }); // global handler when an invalid route is trying to be accessed
 
-app.listen(PORT, (error) => {
+app.listen(PORT, '0.0.0.0', (error) => {
     if (error) {
         console.error(error);
     }
 
-    console.log(`Listening on: http://localhost:${PORT}`)
+    console.log(`Server listening on port: ${PORT}`)
 })
