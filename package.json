@@ -1,0 +1,9 @@
+{
+    "name": "track-my-series",
+    "private": true,
+    "scripts": {
+        "start": "node server/server.js",
+        "build": "cd client && npm run build",
+        "install": "cd server && npm i && cd ../client && npm i"
+    }
+}

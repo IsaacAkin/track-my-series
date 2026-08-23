@@ -4,7 +4,8 @@ export const fetchTitleInformation = async ({ request }) => {
     const id = url.pathname.split('/').at(-1);
     const mediaType = url.pathname.split('/').at(-2);
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}`);
+    // const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}`);
+    const response = await fetch(`api/title/${mediaType}/${id}`);
 
     if (!response.ok) {
         const err = await response.json();
@@ -21,7 +22,8 @@ export async function fetchTitlesFromApi({ request }) {
 
     if (!searchTerm) return { results: [] };
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+    // const response = await fetch(`${import.meta.env.VITE_API_URL}/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+    const response = await fetch(`api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
 
     if (!response.ok) {
         const err = await response.json();
@@ -40,9 +42,11 @@ export const fetchTitlesFromDatabase = async ({ request }) => {
     // if (watchStatus != 'watchlist' && !watchStatus) return { results: [] };
 
     if (watchStatus == 'watchlist') {
-        response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist`);
+        // response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist`);
+        response = await fetch(`api/watchlist`);
     } else {
-        response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist/${watchStatus}`);
+        // response = await fetch(`${import.meta.env.VITE_API_URL}/watchlist/${watchStatus}`);
+        response = await fetch(`api/watchlist/${watchStatus}`);
     }
 
     if (!response) {
@@ -55,7 +59,8 @@ export const fetchTitlesFromDatabase = async ({ request }) => {
 
 // POST adds title information to the database
 export const addToDatabase = async (title, watchStatus) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${title.media_type}/${title.id}`, {
+    // const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${title.media_type}/${title.id}`, {
+    const response = await fetch(`api/title/${title.media_type}/${title.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -74,7 +79,8 @@ export const addToDatabase = async (title, watchStatus) => {
 
 // PATCH
 export const updateTitleRating = async (id, mediaType, newRating) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/rating`, {
+    // const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/rating`, {
+    const response = await fetch(`api/title/${mediaType}/${id}/rating`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newRating })
@@ -90,7 +96,8 @@ export const updateTitleRating = async (id, mediaType, newRating) => {
 
 // PATCH
 export const updateTitleWatchStatus = async (id, mediaType, newStatus) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/status`, {
+    // const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/status`, {
+    const response = await fetch(`api/title/${mediaType}/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newStatus })
@@ -106,7 +113,8 @@ export const updateTitleWatchStatus = async (id, mediaType, newStatus) => {
 
 // PATCH updates a tv series watched count
 export const updateTvWatchedCount = async (id, mediaType, seasonNumber, watchedCount, episodeCount) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/episodecount`, {
+    // const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/episodecount`, {
+    const response = await fetch(`api/title/${mediaType}/${id}/episodecount`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -126,7 +134,8 @@ export const updateTvWatchedCount = async (id, mediaType, seasonNumber, watchedC
 
 // PATCH updates a movies watched count
 export const updateMovieWatchedCount = async (id, mediaType, watchedCount) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/episodecount`, {
+    // const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}/episodecount`, {
+    const response = await fetch(`api/title/${mediaType}/${id}/episodecount`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -144,7 +153,8 @@ export const updateMovieWatchedCount = async (id, mediaType, watchedCount) => {
 
 // DELETE
 export const removeTitleFromDatabase = async (id, mediaType) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}`, {
+    // const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${mediaType}/${id}`, {
+    const response = await fetch(`api/title/${mediaType}/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
     });
