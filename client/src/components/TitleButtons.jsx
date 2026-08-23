@@ -43,15 +43,15 @@ export const AddTitleBtn = ({ title }) => {
 
 export function SeasonsDropdown({ title }) {
     const seasons = title.seasons;
-    const [currentSeason, setCurrentSeason] = useState(title.media_type == 'tv' && seasons[0].season_number);
+    const [currentSeason, setCurrentSeason] = useState(title.media_type == 'tv' && title.seasons[0].season_number);
     const [episodeCount, setEpisodeCount] = useState(title.media_type == 'tv' ? title.seasons[0].episode_count : 1);
-    const [watchedCount, setWatchedCount] = useState(title.media_type == 'tv' ? title.seasons[0].watched_count : title.watched == false ? 0 : 1);
+    const [watchedCount, setWatchedCount] = useState(title.media_type == 'tv' ? (title.seasons[0].watched_count ?? 0) : (title.watched == false ? 0 : 1));
 
     const fetchSeasonInformation = (e) => {
         const foundSeason = seasons.find(season => season.season_number == Number(e.target.value));
-        setCurrentSeason(foundSeason);
+        setCurrentSeason(foundSeason.season_number);
         setEpisodeCount(foundSeason.episode_count);
-        setWatchedCount(foundSeason.watched_count);
+        setWatchedCount(foundSeason.watched_count ?? 0);
     }
 
     return (
@@ -87,7 +87,7 @@ function TvEpisodeHandler({ title, currentSeason, episodeCount, watchedCount, up
         setLoading(true);
         
         try {
-            const response = await updateTvWatchedCount(title._id, title.media_type, currentSeason.season_number, watchedCount, episodeCount);
+            const response = await updateTvWatchedCount(title._id, title.media_type, currentSeason, watchedCount, episodeCount);
             if (!response.ok) {
                 updateWatchedCount(watchedCount--);
             }
@@ -107,7 +107,7 @@ function TvEpisodeHandler({ title, currentSeason, episodeCount, watchedCount, up
         setLoading(true);
         
         try {
-            const response = await updateTvWatchedCount(title._id, title.media_type, currentSeason.season_number, watchedCount, episodeCount);
+            const response = await updateTvWatchedCount(title._id, title.media_type, currentSeason, watchedCount, episodeCount);
             if (!response.ok) {
                 updateWatchedCount(watchedCount--);
             }
