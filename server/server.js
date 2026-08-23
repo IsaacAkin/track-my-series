@@ -29,8 +29,7 @@ app.use('/api/watchlist', watchlistRouter);
 const clientPath = path.join(__dirname, '../client/dist');
 isProd && app.use(express.static(clientPath));
 
-// app.get('/{*splat}', (req, res) => {
-app.get('*', (req, res) => {
+app.get('/{*splat}', (req, res) => {
     if (isProd) {
         res.sendFile(path.join(clientPath, 'index.html'));
     } else {
