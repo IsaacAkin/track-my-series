@@ -31,9 +31,9 @@ export const AddTitleBtn = ({ title }) => {
                 :
                     <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={''} onChange={addTitle}>
                         <option value="" disabled>Add to Watchlist</option>
-                        <option value="plan-to-watch">Planning</option>
+                        <option value="planning">Planning</option>
                         <option value="completed">Completed</option>
-                        <option value="on-hold">Paused</option>
+                        <option value="paused">Paused</option>
                         <option value="watching">Watching</option>
                     </select>
             }
