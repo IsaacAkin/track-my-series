@@ -47,11 +47,22 @@ export function SeasonsDropdown({ title }) {
     const [episodeCount, setEpisodeCount] = useState(title.media_type == 'tv' ? title.seasons[0].episode_count : 1);
     const [watchedCount, setWatchedCount] = useState(title.media_type == 'tv' ? (title.seasons[0].watched_count ?? 0) : (title.watched == false ? 0 : 1));
 
-    const fetchSeasonInformation = (e) => {
-        const foundSeason = seasons.find(season => season.season_number == Number(e.target.value));
-        setCurrentSeason(foundSeason.season_number);
-        setEpisodeCount(foundSeason.episode_count);
-        setWatchedCount(foundSeason.watched_count ?? 0);
+    const fetchSeasonInformation = async (e) => {
+        // updates the seasons watched episode count to the latest version upon selecting a different season
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/title/${title.media_type}/${title._id}`);
+
+        if (!response.ok) {
+            throw new Error('Unable to fetch season information');
+        }
+
+        const data = await response.json();
+        const seasonInfo = data.title.seasons.find(season => season.season_number === Number(e.target.value));
+
+        if (!seasonInfo) throw new Error("Season information not found");
+
+        setCurrentSeason(seasonInfo.season_number);
+        setEpisodeCount(seasonInfo.episode_count);
+        setWatchedCount(seasonInfo.watched_count ?? 0);
     }
 
     return (
