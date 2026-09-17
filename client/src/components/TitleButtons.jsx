@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Modal from "./Modal.jsx";
 import { addToDatabase, removeTitleFromDatabase, updateTitleWatchStatus, updateTitleRating, updateTvWatchedCount, updateMovieWatchedCount } from "../services/api.js";
 
 export const AddTitleBtn = ({ title }) => {
@@ -334,8 +335,17 @@ export const SetTitleRating = ({ title }) => {
 }
 
 export const DeleteTitleBtn = ({ title }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const openModal = () => {
+        setIsOpen(true);
+    }
+    
+    const closeModal = () => {
+        setIsOpen(false);
+    }
 
     const deteleTitle = async () => {
         setLoading(true);
@@ -347,6 +357,7 @@ export const DeleteTitleBtn = ({ title }) => {
                 console.log(response.message);
             }
 
+            closeModal();
             console.log(response.message);
         } catch (error) {
             setError(error);
@@ -363,10 +374,20 @@ export const DeleteTitleBtn = ({ title }) => {
                 ? 
                 <>
                     <p>Deleting...</p>
-                    <button onClick={deteleTitle} className="hidden" >🗑️</button>
+                    <button onClick={openModal} className="hidden">🗑️</button>
                 </>
-                : <button onClick={deteleTitle}>🗑️</button>
+                : <button onClick={openModal}>🗑️</button>
             }
+            <Modal isOpen={isOpen} onClose={closeModal}>
+              <p>Are you sure you want to delete "{title.title}" from your watchlist?</p>
+                <div className="modal-button-container" style={{
+                    'display': "flex",
+                    'justifyContent': "center"
+                }}>
+                    <button type="button" onClick={deteleTitle}>Yes</button>
+                    <button type="button" onClick={closeModal}>No</button>
+                </div>  
+            </Modal>
         </div>
     )   
 }
