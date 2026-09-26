@@ -1,4 +1,4 @@
-import TitlesList from "../../components/TitlesList";
+import TitlesList from "../../components/watchlist/TitlesList";
 import { useLoaderData } from "react-router";
 
 export default function Completed() {
