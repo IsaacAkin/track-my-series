@@ -1,9 +1,9 @@
 import Navbar from "../components/Navbar.jsx";
 import { useLoaderData } from "react-router";
-import AddTitleBtn from "../components/title/AddTitleButton.jsx"
-import UpdateStatusBtn from "../components/title/StatusDropdown.jsx";
-import DeleteTitleBtn from "../components/title/DeleteTitleButton.jsx"
-import SetTitleRating from "../components/title/RatingDropdown.jsx"
+import AddTitleButton from "../components/title/AddTitleButton.jsx"
+import StatusDropdown from "../components/title/StatusDropdown.jsx";
+import DeleteTitleButton from "../components/title/DeleteTitleButton.jsx"
+import RatingDropdown from "../components/title/RatingDropdown.jsx"
 import SeasonsDropdown from "../components/title/SeasonsDropdown.jsx"
 
 function ApiTitle({ title }) {
@@ -26,7 +26,7 @@ function ApiTitle({ title }) {
                         {/* {title.release_date !== 'N/A' && <p>{title.release_date}</p>} */}
                         {title.seasons !== 'N/A' && <p>{title.seasons.length} seasons</p>}
                         <p>Rating: {title.rating}</p>
-                        <AddTitleBtn title={title} />
+                        <AddTitleButton title={title} />
                     </div>
                 </div>
             </div>
@@ -50,10 +50,10 @@ function DatabaseTitle({ title }) {
                     </div>
                     <div className="status-buttons">
                         <p>Rating: {title.rating}</p>
-                        <UpdateStatusBtn title={title} />
-                        <SetTitleRating title={title} />
+                        <StatusDropdown title={title} />
+                        <RatingDropdown title={title} />
                         <SeasonsDropdown title={title} />
-                        <DeleteTitleBtn title={title} />
+                        <DeleteTitleButton title={title} />
                     </div>
                 </div>
             </div>

@@ -2,7 +2,8 @@ import { useState } from "react";
 import Modal from "../Modal.jsx";
 import { removeTitleFromDatabase } from "../../services/api.js"
 
-export default function DeleteTitleBtn({ title }) {
+// A button that removes a title from the database when clicked
+export default function DeleteTitleButton({ title }) {
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);

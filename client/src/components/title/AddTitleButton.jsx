@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { addToDatabase } from "../../services/api.js"
 
-export default function AddTitleBtn({ title }) {
+// Adds a tvseries/movie to the database when clicked
+export default function AddTitleButton({ title }) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    // Adds a title with the watch status of the selected value
     const addTitle = async (e) => {
         const selectedStatus = e.target.value;
         setLoading(true);

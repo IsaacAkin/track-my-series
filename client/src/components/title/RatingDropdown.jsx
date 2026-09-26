@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { updateTitleRating } from "../../services/api.js"
 
-export default function SetTitleRating({ title }) {
+// A dropdown that displays and handles all actions relating to a titles rating
+export default function RatingDropdown({ title }) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [rating, setRating] = useState(title.rating ? title.rating : '0')
 
+    // Updates and changes a titles rating when a new rating is selected
     const changeRating = async (e) => {
         const selectedRating = e.target.value;
         setLoading(true);

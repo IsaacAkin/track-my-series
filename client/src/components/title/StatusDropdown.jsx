@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { updateTitleWatchStatus } from "../../services/api.js"
 
-export default function UpdateStatusBtn({ title }) {
+// A dropdown that displays and handles all actions relating to a titles watch status
+export default function StatusDropdown({ title }) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(title.watch_status);
 
+    // Updates and changes a titles watch status when a new watch status is selected
     const changeStatus = async (e) => {
         const selectedStatus = e.target.value;
         setLoading(true);
