@@ -1,6 +1,10 @@
 import Navbar from "../components/Navbar.jsx";
 import { useLoaderData } from "react-router";
-import { AddTitleBtn, UpdateStatusBtn, DeleteTitleBtn, SetTitleRating, SeasonsDropdown } from "../components/TitleButtons.jsx";
+import AddTitleBtn from "../components/title/AddTitleButton.jsx"
+import UpdateStatusBtn from "../components/title/StatusDropdown.jsx";
+import DeleteTitleBtn from "../components/title/DeleteTitleButton.jsx"
+import SetTitleRating from "../components/title/RatingDropdown.jsx"
+import SeasonsDropdown from "../components/title/SeasonsDropdown.jsx"
 
 function ApiTitle({ title }) {
     return (
