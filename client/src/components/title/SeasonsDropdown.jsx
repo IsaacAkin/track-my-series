@@ -29,8 +29,7 @@ export default function SeasonsDropdown({ title }) {
     return (
         <>
             {
-                seasons && title.media_type == 'tv'
-                ?
+                title.media_type === 'tv' &&
                 <>
                     <select name="seasons-dropdown" id="seasons-dropdown" defaultValue={currentSeason} onChange={fetchSeasonInformation}>
                         {
@@ -41,8 +40,11 @@ export default function SeasonsDropdown({ title }) {
                     </select>
                     <TvEpisodeHandler title={title} currentSeason={currentSeason} episodeCount={episodeCount} watchedCount={watchedCount} updateWatchedCount={setWatchedCount} />
                 </>
-                : <MovieEpisodeHandler title={title} watchedCount={watchedCount} updateWatchedCount={setWatchedCount} />
             }
+            {
+                title.media_type === 'movie' &&
+                <MovieEpisodeHandler title={title} watchedCount={watchedCount} updateWatchedCount={setWatchedCount} />
+            }  
         </>
     )
 }
