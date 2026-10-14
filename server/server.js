@@ -36,7 +36,9 @@ if (isProd) {
         res.sendFile(path.join(clientPath, 'index.html'));
     });
 } else {
-    res.status(404).send('Page not found.'); // global handler when an invalid route is trying to be accessed
+    app.use((req, res) => {
+        res.status(404).send('Page not found.'); // global handler when an invalid route is trying to be accessed
+    });
 }
 
 
