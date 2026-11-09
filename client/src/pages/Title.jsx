@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar.jsx";
+import { useState } from "react";
 import { useLoaderData } from "react-router";
 import AddTitleButton from "../components/title/AddTitleButton.jsx"
 import StatusDropdown from "../components/title/StatusDropdown.jsx";
@@ -6,7 +7,7 @@ import DeleteTitleButton from "../components/title/DeleteTitleButton.jsx"
 import RatingDropdown from "../components/title/RatingDropdown.jsx"
 import SeasonsDropdown from "../components/title/SeasonsDropdown.jsx"
 
-function ApiTitle({ title }) {
+function ApiTitle({ title, databaseTitle }) {
     return (
         <div className="container">
             <div className="title-information">
@@ -26,7 +27,7 @@ function ApiTitle({ title }) {
                         {/* {title.release_date !== 'N/A' && <p>{title.release_date}</p>} */}
                         {title.seasons !== 'N/A' && <p>{title.seasons.length} seasons</p>}
                         <p>Rating: {title.rating}</p>
-                        <AddTitleButton title={title} />
+                        <AddTitleButton title={title} setTitle={databaseTitle} />
                     </div>
                 </div>
             </div>
@@ -62,15 +63,21 @@ function DatabaseTitle({ title }) {
 }
 
 export default function Title() {
-    const { title } = useLoaderData()
+    const { title } = useLoaderData();
+    const [databaseTitle, setDatabaseTitle] = useState(null);
 
     return(
         <div className="app">
             <Navbar />
-            <>
-                {title && title.id && <ApiTitle title={title} /> }
-                {title && title._id && <DatabaseTitle title={title} /> }
-            </>
+            {
+                databaseTitle ? (
+                    <DatabaseTitle title={databaseTitle} /> // renders a title that was just added to the database
+                ) : title._id ? (
+                    <DatabaseTitle title={title} /> // renders a pre-existing title from the database
+                ) : (
+                    <ApiTitle title={title} databaseTitle={setDatabaseTitle} /> // renders a title fetched from the external API
+                )
+            }
         </div>
     )
 }

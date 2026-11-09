@@ -2,7 +2,7 @@ import { useState } from "react";
 import { addToDatabase } from "../../services/api.js"
 
 // Adds a tvseries/movie to the database when clicked
-export default function AddTitleButton({ title }) {
+export default function AddTitleButton({ title, setTitle }) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -14,8 +14,13 @@ export default function AddTitleButton({ title }) {
         try {
             const response = await addToDatabase(title, selectedStatus);
             console.log(response.message);
+
+            // gets the newly addded title from the database to set as the new face of the component
+            const databaseTitle = response.newTitle;
+            setTitle(databaseTitle);
         } catch (error) {
             setError(error);
+            console.log(error.message);
         } finally {
             setLoading(false);
         }
@@ -23,21 +28,16 @@ export default function AddTitleButton({ title }) {
 
     return (
         <div>
-            { error && <p>Error adding title</p> }
-            {
-                loading
-                ? 
-                <>
-                    <p>Adding...</p>
-                </>
-                :
-                    <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={''} onChange={addTitle}>
-                        <option value="" disabled>Add to Watchlist</option>
-                        <option value="planning">Planning</option>
-                        <option value="completed">Completed</option>
-                        <option value="paused">Paused</option>
-                        <option value="watching">Watching</option>
-                    </select>
+            {error && <p>Error adding title</p>}
+            {loading && <p>Adding...</p>}
+            {!error && !loading &&
+                <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={''} onChange={addTitle}>
+                    <option value="" disabled>Add to Watchlist</option>
+                    <option value="planning">Planning</option>
+                    <option value="completed">Completed</option>
+                    <option value="paused">Paused</option>
+                    <option value="watching">Watching</option>
+                </select>
             }
         </div>
     )

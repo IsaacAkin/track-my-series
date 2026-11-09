@@ -100,8 +100,12 @@ export async function addTitleToDatabase(req, res) {
         }
     
         await addToCollection(id, title, original_title, mediaType, start_date, end_date, release_date, original_language, genres, airing, overview, watchStatus, seasons, poster_src);
-
-        res.status(201).json({ message: `'${title}' has been added to the collection and set to '${watchStatus}'.` });
+        const addedTitle = await getTitle(id); // fetch the title and return it as JSON. Will be used to update the component on button click
+        
+        res.status(201).json({ 
+            message: `'${title}' has been added to the collection and set to '${watchStatus}'.`,
+            newTitle: addedTitle
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to add title to the database.' });
