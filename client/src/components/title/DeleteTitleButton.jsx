@@ -3,7 +3,7 @@ import Modal from "../Modal.jsx";
 import { removeTitleFromDatabase } from "../../services/api.js"
 
 // A button that removes a title from the database when clicked
-export default function DeleteTitleButton({ title }) {
+export default function DeleteTitleButton({ title, setTitle }) {
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -26,6 +26,7 @@ export default function DeleteTitleButton({ title }) {
                 console.log(response.message);
             }
 
+            setTitle(null); // currentTitle state is set to null for Title component re-render
             closeModal();
             console.log(response.message);
         } catch (error) {
@@ -37,16 +38,9 @@ export default function DeleteTitleButton({ title }) {
 
     return (
         <div>
-            { error && <p>Error deleting title</p> }
-            {
-                loading
-                ? 
-                <>
-                    <p>Deleting...</p>
-                    <button onClick={openModal} className="hidden">🗑️</button>
-                </>
-                : <button onClick={openModal}>🗑️</button>
-            }
+            {error && <p>Error deleting title</p>}
+            {loading && <p>Deleting...</p>}
+            {!loading && <button onClick={openModal}>🗑️</button>}
             <Modal isOpen={isOpen} onClose={closeModal}>
               <p>Are you sure you want to delete "{title.title}" from your watchlist?</p>
                 <div className="modal-button-container" style={{

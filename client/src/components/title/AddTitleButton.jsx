@@ -15,9 +15,8 @@ export default function AddTitleButton({ title, setTitle }) {
             const response = await addToDatabase(title, selectedStatus);
             console.log(response.message);
 
-            // gets the newly addded title from the database to set as the new face of the component
-            const databaseTitle = response.newTitle;
-            setTitle(databaseTitle);
+            const currentTitle = response.newTitle; // gets the newly addded title from the database
+            setTitle(currentTitle); // updated currentTitle state for Title component re-render
         } catch (error) {
             setError(error);
             console.log(error.message);
@@ -30,7 +29,7 @@ export default function AddTitleButton({ title, setTitle }) {
         <div>
             {error && <p>Error adding title</p>}
             {loading && <p>Adding...</p>}
-            {!error && !loading &&
+            {!loading &&
                 <select name="watchstatus-dropdown" id="watchstatus-dropdown" defaultValue={''} onChange={addTitle}>
                     <option value="" disabled>Add to Watchlist</option>
                     <option value="planning">Planning</option>
